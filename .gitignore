@@ -1,0 +1,4 @@
+*.exe
+.ipynb_checkpoints/
+*.csv
+.vscode/
