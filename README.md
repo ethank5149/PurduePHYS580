@@ -41,6 +41,14 @@
   - Exercise 1
 - Chapter 12 - Interdisciplinary Topics
   - Exercise 1
+- Appendix A - Ordinary Differential Equations with Initial Values
+- Appendix B - Root Finding and Optimization
+- Appendix C - The Fourier Transform
+- Appendix D - Fitting Data to a Function
+- Appendix E - Numerical Integration
+- Appendix F - Generation of Random Numbers
+- Appendix G - Statistical Tests of Hypothesis
+- Appendix H - Solving Linear Systems
 ---
 
 ### Setup
