@@ -2,7 +2,9 @@
 <h3><center>Computational Physics - Giordano & Nakanishi</center></h3>
 <br></br>
 <center>Ethan Knox</center>
+
 <center>ethank5149@gmail.com</center>
+
 <center>www.github.com/ethank5149</center>
 
 > Solutions to exercises in "Computational Physics" by Giordano & Nakanishi.
