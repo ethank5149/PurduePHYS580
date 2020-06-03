@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------*\
   ========          |  Purdue Physics 580 - Computational Physics
-  \\                |  Chapter 2 - Exercise 1
+  \\                |  Chapter 2 - Exercise 2
    \\               |  
    //               |  Author: Ethan Knox
   //                |  Website: https://www.github.com/ethank5149
@@ -90,8 +90,8 @@ int main()
 void initialize(parameters &params, xarray<double> &t, xarray<double> &X)
 {
     cout << "Running 'exercise2_1.exe'...\n\n";
-    cout << "Input Parameters (m C rho A P v0 dt t_final):\n";
-    cin >> params.m >> params.C >> params.rho >> params.A >> params.P >> params.v0 >> params.dt >> params.tf;
+    cout << "Input Parameters (m C rho A P dt t_final):\n";
+    cin >> params.m >> params.C >> params.rho >> params.A >> params.P >> params.dt >> params.tf;
 
     params.N = (unsigned int)ceil(params.tf / params.dt);
     // Resize our data (x)arrays to the correct size
@@ -102,17 +102,18 @@ void initialize(parameters &params, xarray<double> &t, xarray<double> &X)
 
     cout << "Input Initial Conditions (x_0 y_0):\n";
     cin >> X(0, 0) >> X(0, 1);
+    params.v0 = norm_l2(view(X, 0))();
     cout << "Done.\n\n";
 
     // Print the parsed input back to the user
     stringstream input_params_string;
     stringstream input_initcond_string;
-    input_params_string << "(" << params.m << ", " << params.C << ", " << params.rho << ", " << params.A << ", " << params.P << ", " << params.v0 << ", " << params.dt << ", " << params.tf << ")\n";
+    input_params_string << "(" << params.m << ", " << params.C << ", " << params.rho << ", " << params.A << ", " << params.P << ", " << params.dt << ", " << params.tf << ")\n";
     input_initcond_string << "(" << X(0, 0) << ", " << X(0, 1) << ")\n";
 
     cout << "Parsed Input\n";
     cout << "##################################################\n";
-    cout << "Parameters (m C rho A P v0 dt t_final) = " << input_params_string.str();
+    cout << "Parameters (m C rho A P dt t_final) = " << input_params_string.str();
     cout << "Initial Conditions (x_0, y_0) = " << input_initcond_string.str();
     cout << "##################################################\n\n";
     return;
@@ -128,7 +129,7 @@ void calculate(parameters &params, xarray<double> &t, xarray<double> &X)
     for (unsigned int i = 0; i <= params.N - 1; i++)
     {
         // Forward Euler Method
-        F_d = -b * norm_l2(row(X, i)) * row(X, i);
+        F_d = -b * norm_l2(row(X, i))() * row(X, i);
         row(X, i + 1) = row(X, i) + (1 / params.m) * (F_appl + F_d) * params.dt;
         t(i + 1) = t(i) + params.dt;
     }
@@ -140,7 +141,7 @@ void store(parameters &params, xarray<double> &t, xarray<double> &X)
 {
     // Define output file string
     stringstream ss;
-    ss << "../data/exercise2_1_m=" << params.m << "_C=" << params.C << "_r=" << params.rho << "_A=" << params.A << "_P=" << params.P << "_v0=" << params.v0 << "_dt=" << params.dt << "_tf=" << params.tf << "_x0=" << X(0, 0) << "_y0=" << X(0, 1) << ".csv";
+    ss << "../data/exercise2_2_m=" << params.m << "_C=" << params.C << "_r=" << params.rho << "_A=" << params.A << "_P=" << params.P << "_dt=" << params.dt << "_tf=" << params.tf << "_x0=" << X(0, 0) << "_y0=" << X(0, 1) << ".csv";
 
     // Declare and open the output fine, then write data headers
     cout << "Writing to file...\n\n";
@@ -155,4 +156,4 @@ void store(parameters &params, xarray<double> &t, xarray<double> &X)
     cout << "Done.\n\n";
     return;
 }
-// 70 0.5 1.1445 0.33 400 4 0.1 200
+// 70 0.5 1.1445 0.33 400 0.1 200
