@@ -1,9 +1,9 @@
-<h1><center>Purdue Physics 580</center></h1>
-<h3><center>Computational Physics - Giordano & Nakanishi</center></h3>
+<h1 align=center>Purdue Physics 580</h1>
+<h3 align=center>Computational Physics - Giordano & Nakanishi</h3>
 <br></br>
-<center>Ethan Knox</center>
-<center>ethank5149@gmail.com</center>
-<center>www.github.com/ethank5149</center>
+<h5 align=center>Ethan Knox</h5>
+<h5 align=center>Email: ethank5149@gmail.com</h5>
+<h5 align=center>Github: www.github.com/ethank5149</h5>
 
 > Solutions to exercises in "Computational Physics" by Giordano & Nakanishi.
 
