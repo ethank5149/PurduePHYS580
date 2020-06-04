@@ -53,8 +53,7 @@ using namespace xt;
 /*****************************************************************************/
 
 // Global Definitions
-#define g 9.81     //Gravitational Acceleration [m/s^2]
-#define num_eqns 2 // Number of equations
+#define g 9.81 //Gravitational Acceleration [m/s^2]
 
 // Struct Declarations
 struct parameters
@@ -76,8 +75,8 @@ void store(parameters &, xarray<double> &, xarray<double> &);
 
 int main()
 {
-    xarray<double> t = zeros<double>({100});           // Time (x)array
-    xarray<double> X = zeros<double>({100, num_eqns}); // Data (x)array
+    xarray<double> t = zeros<double>({100}); // Time (x)array
+    xarray<double> X = zeros<double>({100}); // Data (x)array
 
     initialize(params, t, X);
     calculate(params, t, X);
@@ -92,39 +91,40 @@ void initialize(parameters &params, xarray<double> &t, xarray<double> &X)
 
     params.N = (unsigned int)ceil(params.tf / params.dt);
     // Resize our data (x)arrays to the correct size
-    X.resize({params.N + 1, num_eqns});
+    X.resize({params.N + 1});
     X.fill(0.);
     t.resize({params.N + 1});
     t.fill(0.);
 
-    cout << "Input Initial Conditions (x_0 y_0):\n";
-    cin >> X(0, 0) >> X(0, 1);
-    params.v0 = norm_l2(view(X, 0))();
+    cout << "Input Initial Conditions (v_0):\n";
+    cin >> X(0);
+    params.v0 = X(0);
     cout << "Done.\n\n";
 
     // Print the parsed input back to the user
     stringstream input_params_string;
     stringstream input_initcond_string;
     input_params_string << "(" << params.m << ", " << params.P << ", " << params.dt << ", " << params.tf << ")\n";
-    input_initcond_string << "(" << X(0, 0) << ", " << X(0, 1) << ")\n";
+    input_initcond_string << X(0) << "\n";
 
     cout << "Parsed Input\n";
     cout << "##################################################\n";
     cout << "Parameters (m P dt t_final) = " << input_params_string.str();
-    cout << "Initial Conditions (dx_0, dy_0) = " << input_initcond_string.str();
+    cout << "Initial Conditions (v_0) = " << input_initcond_string.str();
     cout << "##################################################\n\n";
     return;
 }
 
 void calculate(parameters &params, xarray<double> &t, xarray<double> &X)
 {
-    xarray<double> F_appl{params.P / params.v0, 0}; // Applied force on the bike
+    double F_appl; // Applied force on the bike
     cout << "Running Simulation...\n";
 
     for (unsigned int i = 0; i <= params.N - 1; i++)
     {
         // Forward Euler Method
-        row(X, i + 1) = row(X, i) + (F_appl / params.m) * params.dt;
+        F_appl = params.P / X(i);
+        X(i + 1) = X(i) + params.dt * F_appl / params.m;
         t(i + 1) = t(i) + params.dt;
     }
     cout << "Done.\n\n";
@@ -135,17 +135,17 @@ void store(parameters &params, xarray<double> &t, xarray<double> &X)
 {
     // Define output file string
     stringstream ss;
-    ss << "../data/exercise2_1_m=" << params.m << "_P=" << params.P << "_dt=" << params.dt << "_tf=" << params.tf << "_x0=" << X(0, 0) << "_y0=" << X(0, 1) << ".csv";
+    ss << "../data/exercise2_1_m=" << params.m << "_P=" << params.P << "_dt=" << params.dt << "_tf=" << params.tf << "_v0=" << X(0) << ".csv";
 
     // Declare and open the output fine, then write data headers
     cout << "Writing to file...\n\n";
     ofstream f(ss.str().c_str());
-    f << "t, x, y\n";
+    f << "t, v\n";
 
     // Write data to output file
     for (unsigned int i = 0; i <= params.N; i++)
     {
-        f << t(i) << ", " << X(i, 0) << ", " << X(i, 1) << "\n";
+        f << t(i) << ", " << X(i) << "\n";
     }
     cout << "Done.\n\n";
     return;
