@@ -1,7 +1,7 @@
 INC = -I ../include
 OBJ = -o ../build
 
-all: exercise2_1 exercise2_2 exercise2_3 exercise2_4 #exercise1_5 exercise1_6
+all: template #exercise2_1 exercise2_2 exercise2_3 exercise2_4 #exercise1_5 exercise1_6
 
 exercise2_1: exercise2_1.cpp
 	g++ $(INC) $(OBJ)/exercise2_1 exercise2_1.cpp
@@ -14,6 +14,9 @@ exercise2_3: exercise2_3.cpp
 
 exercise2_4: exercise2_4.cpp
 	g++ $(INC) $(OBJ)/exercise2_4 exercise2_4.cpp
+
+template: template.cpp
+	g++ $(INC) $(OBJ)/template template.cpp
 
 # exercise1_5: exercise1_5.cpp
 # 	g++ $(INC) $(OBJ)/exercise1_5 exercise1_5.cpp

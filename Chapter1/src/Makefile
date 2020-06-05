@@ -1,4 +1,4 @@
-INC = -I ../include
+INC = -I../include -I..\..\..\..\Libraries\boost
 OBJ = -o ../build
 
 all: exercise1_1 exercise1_2 exercise1_3 exercise1_4 exercise1_5 exercise1_6
