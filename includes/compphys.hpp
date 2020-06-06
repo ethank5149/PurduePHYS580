@@ -11,15 +11,6 @@
 
 using namespace std;
 
-struct Forces
-{
-    valarray<double> gravity;
-    valarray<double> applied;
-    valarray<double> viscous_drag;
-    valarray<double> laminar_drag;
-    vector<valarray<double> (*)(struct Simulation)> force_list;
-};
-
 struct Environment
 {
     double rho = 1.225;   // Default in air
@@ -38,47 +29,38 @@ struct Data
 
 struct Object
 {
-    double m = 70.0;                          // Mass [kg]
-    double Cd = 0.5;                          // Drag Coefficient
-    double A = 0.33;                          // Cross-sectional Area [m^2]
-    double I = 0.0;                           // Moment of Inertia
-    double w = 0.411;                         // Width
-    double h = A / w;                         // Height
-    valarray<double> pos = {0.0, 0.0, 0.0};   // Position
-    valarray<double> vel = {0.0, 0.0, 0.0};   // Velocity
-    valarray<double> F_Net = {0.0, 0.0, 0.0}; // Net Force
-    void print_current_state();
+    double m = 70.0;                              // Mass [kg]
+    double Cd = 0.5;                              // Drag Coefficient
+    double A = 0.33;                              // Cross-sectional Area [m^2]
+    double I = 0.0;                               // Moment of Inertia
+    double w = 0.411;                             // Width
+    double h = A / w;                             // Height
+    valarray<double> pos = {0.0, 0.0, 0.0};       // Position
+    valarray<double> vel = {0.0, 0.0, 0.0};       // Velocity
+    valarray<double> (*F_Net)(struct Simulation); // Net Force
 };
-
-void Object::print_current_state()
-{
-    cout << "Position, Velocity, Net Force\n";
-    cout << "<" << pos[0] << ", " << pos[1] << ", " << pos[2] << ">, ";
-    cout << "<" << vel[0] << ", " << vel[1] << ", " << vel[2] << ">, ";
-    cout << "<" << F_Net[0] << ", " << F_Net[1] << ", " << F_Net[2] << ">\n";
-}
 
 struct Simulation
 {
 
-    struct Environment env;                    // Simulation Environment
-    struct Object obj;                         // Simulation Object
-    struct Data timeseries;                    // Simulation Time-series Data
-    struct Forces forces;                      // Simulation Forces
-    double dt = 0.1;                           // Time-step
-    double tf = 200;                           // Final Time
-    const unsigned int N = (int)(tf / dt) + 1; // Number of Simulation Update Steps
+    struct Environment env; // Simulation Environment
+    struct Object obj;      // Simulation Object
+    struct Data timeseries; // Simulation Time-series Data
+    double dt = 0.1;        // Time-step
+    double tf = 200;        // Final Time
+    unsigned int N = 0;     // Number of Simulation Update Steps
     void init_memory();
     void update_step();
     void log();
     void run();
+    void print_current_state();
     void store();
     bool terminate();
 };
 
 void Simulation::init_memory()
 {
-    //N = (int)(tf / dt) + 1;
+    N = (int)(tf / dt) + 1;
     // Allocate Space for Enough Data
     timeseries.position.reserve(N);
     timeseries.velocity.reserve(N);
@@ -88,20 +70,14 @@ void Simulation::update_step()
 {
     // Calculate All Forces
 
-    // forces.gravity = {-obj.m * env.g * sin(env.theta), 0, 0};
-    // forces.applied = env.P * obj.vel / pow(obj.vel, 2.0).sum();
-    // forces.viscous_drag = -(env.eta * obj.A / obj.h) * obj.vel;
-    // forces.laminar_drag = -0.5 * obj.Cd * env.rho * obj.A * pow(pow(obj.vel, 2.0).sum(), 0.5) * obj.vel;
-    // obj.F_Net = forces.laminar_drag + forces.viscous_drag + forces.applied + forces.gravity;
-
-    obj.F_Net = {0.0, 0.0, 0.0};
-    for (auto &force : forces.force_list)
-    {
-        obj.F_Net += force(*this);
-    }
+    //forces.gravity = {-obj.m * env.g * sin(env.theta), 0, 0};
+    //forces.applied = env.P * obj.vel / pow(obj.vel, 2.0).sum();
+    //forces.viscous_drag = -(env.eta * obj.A / obj.h) * obj.vel;
+    //forces.laminar_drag = -0.5 * obj.Cd * env.rho * obj.A * pow(pow(obj.vel, 2.0).sum(), 0.5) * obj.vel;
+    //obj.F_Net = forces.laminar_drag + forces.viscous_drag + forces.applied + forces.gravity;
 
     // Can adapt different numerical methods here
-    obj.vel += dt * obj.F_Net / obj.m;
+    obj.vel += dt * obj.F_Net(*this) / obj.m;
     obj.pos += dt * obj.vel;
 }
 
@@ -121,6 +97,7 @@ void Simulation::run()
 {
     for (unsigned int i = 0; i < N; i++)
     {
+
         log();
         update_step();
         if (terminate())
@@ -131,6 +108,14 @@ void Simulation::run()
             break;
         }
     }
+}
+
+void Simulation::print_current_state()
+{
+    cout << "Position, Velocity, Net Force\n";
+    cout << "<" << obj.pos[0] << ", " << obj.pos[1] << ", " << obj.pos[2] << ">, ";
+    cout << "<" << obj.vel[0] << ", " << obj.vel[1] << ", " << obj.vel[2] << ">, ";
+    cout << "<" << obj.F_Net(*this)[0] << ", " << obj.F_Net(*this)[1] << ", " << obj.F_Net(*this)[2] << ">\n";
 }
 
 void Simulation::store()
