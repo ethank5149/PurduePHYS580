@@ -1,22 +1,3 @@
-// #include "compphys.hpp"
-// valarray<double> Fappl(double P, valarray<double> vel)
-// {
-//     valarray<double> F_appl = P * vel / pow(vel, 2.0).sum();
-//     return F_appl;
-// }
-// int main()
-// {
-//     struct Simulation sim;
-//     // sim.particle.Cd = 0.0;
-//     sim.obj.vel = {4.0, 0.0, 0.0};
-//     valarray<double> (*F_appl_ptr)(double, valarray<double>) = Fappl;
-//     sim.forces.force_list.push_back(F_appl_ptr);
-//     sim.init_memory();
-//     sim.run();
-//     sim.store();
-//     sim.obj.print_current_state();
-// }
-
 #include "compphys.hpp"
 
 valarray<double> F_gravity(struct Simulation sim)
@@ -54,8 +35,8 @@ int main()
 
     sim.forces.force_list.push_back(F_applied_ptr);
     sim.forces.force_list.push_back(F_gravity_ptr);
-    // sim.forces.force_list.push_back(F_viscous_drag_ptr);
-    // sim.forces.force_list.push_back(F_laminar_drag_ptr);
+    sim.forces.force_list.push_back(F_viscous_drag_ptr);
+    sim.forces.force_list.push_back(F_laminar_drag_ptr);
     sim.obj.vel = {4.0, 0.0, 0.0};
 
     sim.init_memory();

@@ -1,3 +1,4 @@
+#pragma once
 // compphys.hpp
 
 #include <math.h>
@@ -60,13 +61,13 @@ void Object::print_current_state()
 struct Simulation
 {
 
-    struct Environment env; // Simulation Environment
-    struct Object obj;      // Simulation Object
-    struct Data timeseries; // Simulation Time-series Data
-    struct Forces forces;   // Simulation Forces
-    double dt = 0.1;        // Time-step
-    double tf = 200;        // Final Time
-    double N;               // Number of Simulation Update Steps
+    struct Environment env;                    // Simulation Environment
+    struct Object obj;                         // Simulation Object
+    struct Data timeseries;                    // Simulation Time-series Data
+    struct Forces forces;                      // Simulation Forces
+    double dt = 0.1;                           // Time-step
+    double tf = 200;                           // Final Time
+    const unsigned int N = (int)(tf / dt) + 1; // Number of Simulation Update Steps
     void init_memory();
     void update_step();
     void log();
@@ -77,7 +78,7 @@ struct Simulation
 
 void Simulation::init_memory()
 {
-    N = (int)(tf / dt) + 1;
+    //N = (int)(tf / dt) + 1;
     // Allocate Space for Enough Data
     timeseries.position.reserve(N);
     timeseries.velocity.reserve(N);
@@ -118,7 +119,7 @@ bool Simulation::terminate()
 
 void Simulation::run()
 {
-    for (int i = 0; i < N; i++)
+    for (unsigned int i = 0; i < N; i++)
     {
         log();
         update_step();
