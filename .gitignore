@@ -2,3 +2,5 @@
 .ipynb_checkpoints/
 *.csv
 .vscode/
+legacy/xtl/
+legacy/xtensor/
