@@ -5,14 +5,16 @@
 <h5 align=center>Email: ethank5149@gmail.com</h5>
 <h5 align=center>Github: www.github.com/ethank5149</h5>
 
+---
+
 > Solutions to exercises in "Computational Physics" by Giordano & Nakanishi.
 
 ![License](https://img.shields.io/github/license/ethank5149/Purdue-PHYS-580?color=lime&style=flat)
 ![Code Size](https://img.shields.io/github/languages/code-size/ethank5149/Purdue-PHYS-580?color=purple&style=flat)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ethank5149/Purdue-PHYS-580?color=darkblue&style=flat)
-
-![Made With C++](https://img.shields.io/badge/MADE_WITH-C++-00599C.svg?labelColor=659ad2&logo=c%2b%2b&style=flat)
+![Made With Python](https://img.shields.io/badge/MADE_WITH-PYTHON-3776AB.svg?labelColor=ffd140&logo=python&style=flat)
 ![Made With Jupyter](https://img.shields.io/badge/MADE_WITH-JUPYTER-F37626.svg?labelColor=4e4e4e&logo=jupyter&style=flat)
+![Made With JetBrains](https://img.shields.io/badge/MADE_WITH-JETBRAINS-black.svg?logo=jetbrains&style=flat)
 
 ---
 
