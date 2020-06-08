@@ -40,6 +40,7 @@ def rhs(t, X, m,P):
 def v(t,m,P,v0):
     return np.sqrt(2*P*t/m+v0**2)
 
+
 P = 400
 m = 70
 v0 = 4

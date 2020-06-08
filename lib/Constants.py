@@ -1,6 +1,6 @@
 ########################################################################################################################
-#     ========     |  Purdue Physics 580 - Computational Physics                                                       #
-#     \\           |  Chapter 2 - Problem 5                                                                            #
+#     ========     |  Constants                                                                                        #
+#     \\           |  A basic class for physical constants                                                             #
 #      \\          |                                                                                                   #
 #      //          |  Author: Ethan Knox                                                                               #
 #     //           |  Website: https://www.github.com/ethank5149                                                       #
@@ -24,55 +24,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.     #
 ########################################################################################################################
 
-# Including
-from lib.NDSolveSystem import ODE, SymplecticODE
-import numpy as np
-from matplotlib import pyplot as plt
-from functools import partial
+
+class Air:
+    def __init__(self):
+        self.density = 1.225
+        self.viscosity = 2.0e-5
 
 
-def rhs(t, X, m, P, C, rho, A,F0):
-    if F0*X[0] < P:
-        return np.array([F0/m - 0.5 * C * rho * A * X[0] ** 2 / m, ])
-    else:
-        return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m,])
-
-
-def rhs_old(t, X, m, P, C, rho, A):
-    return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m,])
-
-
-power = 400
-mass = 70
-v_initial = 4
-drag_coeff = 0.5
-v_star = 7
-F_initial = power/v_star
-area = 0.33
-air_density = 1.225
-
-curried_rhs = partial(rhs, m=mass,P=power,C=drag_coeff,rho=air_density,A=area,F0=F_initial)
-curried_rhs_old = partial(rhs_old, m=mass,P=power,C=drag_coeff,rho=air_density,A=area)
-ic = np.array([v_initial,])  # Initial Condition
-
-sim1 = ODE(curried_rhs, ic, ti=0, dt=0.01, tf=50)
-sim2 = ODE(curried_rhs_old, ic, ti=0, dt=0.01, tf=50)
-
-sim1.run()
-sim2.run()
-
-# Plotting
-fig, ax = plt.subplots(1, 1)
-
-ax.plot(sim1.t_series, sim1.X_series[:,0], label=f"New Method")
-ax.plot(sim2.t_series, sim2.X_series[:,0], label=f"Old Method")
-
-ax.legend()
-ax.grid()
-ax.set_xlabel("t")
-ax.set_ylabel(r"$v(t)$")
-
-
-plt.suptitle("Problem 2.5")
-plt.subplots_adjust(wspace=0.3)
-plt.savefig("../../figures/Chapter2/Problem2_5",dpi=300)
+class Water:
+    def __init__(self):
+        self.density = 1000
+        self.viscosity = 1.0e-3

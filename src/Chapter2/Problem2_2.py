@@ -26,12 +26,14 @@
 
 # Including
 from lib.NDSolveSystem import ODE, SymplecticODE
+from lib import Constants
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
 
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
+air = Constants.Air()
 
 
 def rhs(t, X, m,P,C,rho,A):
@@ -42,22 +44,29 @@ def rhs2(t, X, m,P,C,rho,A):
 
 def W_d(X,m,P,C,rho,A):
     return X[:,0]*0.5*C*rho*A*X[:,1]**2
-# X[:,0]*(P/(X[:,1])-0.5*C*rho*A*X[:,1]**2)
 
 def v(t,m,P,v0):
     return np.sqrt(2*P*t/m+v0**2)
+
 
 P = 400
 m = 70
 v0 = 4
 C = 0.5
 A = 0.33
-rho = 1.225
 
-sim1 = ODE(partial(rhs, m=m,P=P,C=C,rho=rho,A=A), np.array([v0,]), ti=0, dt=0.01, tf=200)
-sim2 = ODE(partial(rhs, m=m,P=P,C=C,rho=rho,A=0.3*A), np.array([v0,]), ti=0, dt=0.01, tf=200)
-sim3 = ODE(partial(rhs2, m=m,P=P,C=C,rho=rho,A=A), np.array([0,v0]), ti=0, dt=0.01, tf=200)
-sim4 = ODE(partial(rhs2, m=m,P=P,C=C,rho=rho,A=0.3*A), np.array([0,v0]), ti=0, dt=0.01, tf=200)
+curried_rhs_front = partial(rhs, m=m,P=P,C=C,rho=air.density,A=A)
+curried_rhs_middle = partial(rhs, m=m,P=P,C=C,rho=air.density,A=0.3*A)
+curried_rhs2_front = partial(rhs2, m=m,P=P,C=C,rho=air.density,A=A)
+curried_rhs2_middle = partial(rhs2, m=m,P=P,C=C,rho=air.density,A=0.3*A)
+
+ic = np.array([v0,])
+ic2 = np.array([0,v0])
+
+sim1 = ODE(curried_rhs_front,ic, ti=0, dt=0.01, tf=200)
+sim2 = ODE(curried_rhs_middle, ic, ti=0, dt=0.01, tf=200)
+sim3 = ODE(curried_rhs2_front, ic2, ti=0, dt=0.01, tf=200)
+sim4 = ODE(curried_rhs2_middle, ic2, ti=0, dt=0.01, tf=200)
 
 sim1.run()
 sim2.run()
@@ -69,7 +78,7 @@ fig, ax = plt.subplots(2, 1,sharex=True)
 
 ax[0].plot(sim1.t_series, sim1.X_series[:,0], label=f"Front of the pack")
 ax[0].plot(sim2.t_series, sim2.X_series[:,0], label=f"Middle of the pack")
-ax[1].plot(sim3.t_series, W_d(sim3.X_series,m,P,C,rho,A)-W_d(sim4.X_series,m,P,C,rho,0.3*A), label=r"$W_d$ Front - $W_d$ Middle")
+ax[1].plot(sim3.t_series, W_d(sim3.X_series,m,P,C,air.density,A)-W_d(sim4.X_series,m,P,C,air.density,0.3*A), label=r"$W_d$ Front - $W_d$ Middle")
 # ax[1].plot(sim4.t_series, W_d(sim4.X_series,m,P,C,rho,0.3*A), label=f"Middle of the pack")
 
 for a in ax:

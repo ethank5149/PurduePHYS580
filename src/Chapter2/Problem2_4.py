@@ -25,52 +25,58 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE, SymplecticODE
+# Including
+from lib.NDSolveSystem import ODE
+from lib import Constants
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
 
+
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
-w = 0.411  # Shoulder width
+w = 0.411  # Shoulder Width [m]
+air = Constants.Air()
+water = Constants.Water()
 
 
-def rhs(t, X, m,P,C,rho,eta,A,h,theta):
-    return np.array([P/(m*X[0])-g*np.sin(theta)-eta*w*X[0]/m-0.5*C*rho*A*X[0]**2/m,])
+def rhs(t, X, m, P, C, rho, theta, A):
+    return np.array([P/(m*X[0])-g*np.sin(theta)-0.5*C*rho*A*X[0]**2/m,])
+
 
 P = 400
 m = 70
 v0 = 4
 C = 0.5
+angle_deg = 10
+angle = angle_deg*np.pi/180
+A = 0.33
 
-w = 0.411  # Shoulder Width
-A_front = 0.33
-A_middle = 0.3*A_front
-h_front = A_front/w
-h_middle = A_middle/w
-rho_air = 1.225
-rho_water = 1000
-eta_air = 2.0e-5
-eta_water = 1.0e-3
-theta = np.pi*10/180
+curried_rhs_flat = partial(rhs, m=m, P=P, C=C, rho=air.density, theta=0, A=A)
+curried_rhs_incline = partial(rhs, m=m, P=P, C=C, rho=air.density, theta=angle, A=A)
+curried_rhs_decline = partial(rhs, m=m, P=P, C=C, rho=air.density, theta=-angle, A=A)
 
-sim1 = ODE(partial(rhs, m=m,P=P,C=C,rho=rho_air,eta=eta_air,A=A_front,h=h_front,theta=0), np.array([v0,]), ti=0, dt=0.01, tf=100)
-sim2 = ODE(partial(rhs, m=m,P=P,C=C,rho=rho_air,eta=eta_air,A=A_front,h=h_front,theta=-theta), np.array([v0,]), ti=0, dt=0.01, tf=100)
+ic = np.array([v0, ])
+
+sim1 = ODE(curried_rhs_flat, ic, ti=0, dt=0.01, tf=100)
+sim2 = ODE(curried_rhs_incline, ic, ti=0, dt=0.01, tf=100)
+sim3 = ODE(curried_rhs_decline, ic, ti=0, dt=0.01, tf=100)
 
 sim1.run()
 sim2.run()
+sim3.run()
 
 # Plotting
-fig, ax = plt.subplots(1, 1)
+fig, ax = plt.subplots(1,1)
 
-ax.plot(sim1.t_series, sim1.X_series[:,0], label=f"0 deg")
-ax.plot(sim2.t_series, sim2.X_series[:,0], label=f"-10 deg")
+ax.plot(sim1.t_series, sim1.X_series[:,0], label=rf"$0^{{\circ}}$ Grade")
+ax.plot(sim2.t_series, sim2.X_series[:,0], label=rf"${angle_deg}^{{\circ}}$ Grade")
+ax.plot(sim3.t_series, sim3.X_series[:,0], label=rf"$-{angle_deg}^{{\circ}}$ Grade")
 
 ax.legend()
 ax.grid()
 ax.set_xlabel("t")
 ax.set_ylabel(r"$v(t)$")
-
 
 plt.suptitle("Problem 2.4")
 plt.subplots_adjust(wspace=0.3)
