@@ -1,6 +1,6 @@
 ########################################################################################################################
-#     ========     |  Constants                                                                                        #
-#     \\           |  A basic class for physical constants                                                             #
+#     ========     |  Purdue Physics 580 - Computational Physics                                                       #
+#     \\           |  Chapter 2 - Problem 6                                                                            #
 #      \\          |                                                                                                   #
 #      //          |  Author: Ethan Knox                                                                               #
 #     //           |  Website: https://www.github.com/ethank5149                                                       #
@@ -24,37 +24,77 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.     #
 ########################################################################################################################
 
+# Including
+# Including
+from lib.NDSolveSystem import ODE
+import numpy as np
+from matplotlib import pyplot as plt
 
-class Air:
-    def __init__(self):
-        self.density = 1.225
-        self.viscosity = 2.0e-5
+# Global Definitions
+g = 9.81  # Gravitational Acceleration [m/s^2]
 
 
-class Water:
-    def __init__(self):
-        self.density = 1000
-        self.viscosity = 1.0e-3
+def rhs(t, X):
+    return np.array([X[2], X[3], 0, -g])
 
-class Physics:
-    def __init__(self):
-        self.G = 6.67408e-11
 
-class Sun:
-    def __init__(self):
-        self.radius = 695700e3
-        self.mass = 1988500e24
-        self.volume = 1412000e21
-        self.density = 1408
-        self.GM = 132712e15
-        self.luminosity = 382.8e24
-        self.period = 609.12*60*60
+def terminate(X):
+    return X[1]<0
 
-class Earth:
-    def __init__(self):
-        self.radius = 6371e3
-        self.mass = 5.9724e24
-        self.volume = 1.083e21
-        self.density = 5514
-        self.GM = 0.3986e15
-        self.period = 23.9345*60*60
+
+def deg_to_rad(theta):
+    return np.pi*theta/180
+
+
+def x(t,x0,y0,dx0,dy0):
+    return x0+dx0*t
+
+
+def y(t,x0,y0,dx0,dy0):
+    return y0+dy0*t-0.5*g*t**2
+
+x0 = y0 = 0
+v0 = 700
+angles_deg = (30,35,40,45,50,55)
+
+angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
+ics = tuple([np.array([x0,y0,v0*np.cos(theta),v0*np.sin(theta)]) for theta in angles_rad])
+
+sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=200,terminate=terminate) for ic in ics])
+for sim in sims:
+    sim.run()
+
+xs = tuple([x(sim.t_series,*(sim.X_series[0,:])) for sim in sims])
+ys = tuple([y(sim.t_series,*(sim.X_series[0,:])) for sim in sims])
+
+# Plotting
+# First Plot
+fig, ax = plt.subplots(1,1)
+for angle,sim in zip(angles_deg,sims):
+    ax.plot(sim.X_series[:,0]/1000, sim.X_series[:,1]/1000, label=rf"$\theta = {angle}^{{\circ}}$")
+ax.legend()
+ax.grid()
+ax.set_xlabel("x [km]")
+ax.set_ylabel("y [km]")
+plt.suptitle("Problem 2.6a")
+plt.savefig("../../figures/Chapter2/Problem2_6a",dpi=300)
+
+# Second Plot
+fig, (ax1,ax2) = plt.subplots(2,1,sharex=True)
+for angle,sim,_x in zip(angles_deg,sims,xs):
+    ax1.plot(sim.t_series, np.absolute(sim.X_series[:,0]-_x), label=rf"$\theta = {angle}^{{\circ}}$")
+for angle,sim,_y in zip(angles_deg,sims,ys):
+    ax2.plot(sim.t_series, np.absolute(sim.X_series[:,1]-_y), label=rf"$\theta = {angle}^{{\circ}}$")
+
+ax1.legend()
+ax1.grid()
+ax1.set_ylabel("x [m]")
+ax1.set_title("Absolute Error")
+
+ax2.legend()
+ax2.grid()
+ax2.set_xlabel("t [s]")
+ax2.set_ylabel("y [m]")
+
+plt.suptitle("Problem 2.6b")
+plt.savefig("../../figures/Chapter2/Problem2_6b",dpi=300)
