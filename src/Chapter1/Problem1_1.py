@@ -57,16 +57,15 @@ sim3.run()
 
 # Plot results
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+ax1.plot(sim1.t_series, sim1.X_series[0], label=f"dt = {sim1.dt}")
+ax1.plot(sim2.t_series, sim2.X_series[0], label=f"dt = {sim2.dt}")
+ax1.plot(sim3.t_series, sim3.X_series[0], label=f"dt = {sim3.dt}")
 
-ax1.plot(sim1.t_series, sim1.X_series[:, 0], label=f"dt = {sim1.dt}")
-ax1.plot(sim2.t_series, sim2.X_series[:, 0], label=f"dt = {sim2.dt}")
-ax1.plot(sim3.t_series, sim3.X_series[:, 0], label=f"dt = {sim3.dt}")
-
-ax2.plot(sim1.t_series, 100 * (sim1.X_series[:, 0] - (x0_0 - g * sim1.t_series)) / (x0_0 - g * sim1.t_series),
+ax2.plot(sim1.t_series, 100 * (sim1.X_series[0] - (x0_0 - g * sim1.t_series)) / (x0_0 - g * sim1.t_series),
          label=f"dt = {sim1.dt}")
-ax2.plot(sim2.t_series, 100 * (sim2.X_series[:, 0] - (x0_0 - g * sim2.t_series)) / (x0_0 - g * sim2.t_series),
+ax2.plot(sim2.t_series, 100 * (sim2.X_series[0] - (x0_0 - g * sim2.t_series)) / (x0_0 - g * sim2.t_series),
          label=f"dt = {sim2.dt}")
-ax2.plot(sim3.t_series, 100 * (sim3.X_series[:, 0] - (x0_0 - g * sim3.t_series)) / (x0_0 - g * sim3.t_series),
+ax2.plot(sim3.t_series, 100 * (sim3.X_series[0] - (x0_0 - g * sim3.t_series)) / (x0_0 - g * sim3.t_series),
          label=f"dt = {sim3.dt}")
 
 ax1.set_title('y(t)')

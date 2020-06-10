@@ -71,10 +71,10 @@ sim4.run()
 # Plotting
 fig, (ax1,ax2) = plt.subplots(2,1)
 
-ax1.plot(sim1.t_series, sim1.X_series[:,0], label=f"Front, Air")
-ax1.plot(sim2.t_series, sim2.X_series[:,0], label=f"Middle, Air")
-ax2.plot(sim3.t_series, sim3.X_series[:,0], label=f"Front, Water")
-ax2.plot(sim4.t_series, sim4.X_series[:,0], label=f"Middle, Water")
+ax1.plot(sim1.t_series, sim1.X_series[0], label=f"Front, Air")
+ax1.plot(sim2.t_series, sim2.X_series[0], label=f"Middle, Air")
+ax2.plot(sim3.t_series, sim3.X_series[0], label=f"Front, Water")
+ax2.plot(sim4.t_series, sim4.X_series[0], label=f"Middle, Water")
 
 ax1.legend()
 ax1.grid()

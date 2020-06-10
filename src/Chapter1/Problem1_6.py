@@ -52,9 +52,9 @@ sim3.run()
 # Plotting
 fig, axs = plt.subplots(3, 1,sharex=True)
 
-axs[0].plot(sim1.t_series, sim1.X_series[:])
-axs[1].plot(sim2.t_series, sim2.X_series[:])
-axs[2].plot(sim3.t_series, sim3.X_series[:])
+axs[0].plot(sim1.t_series, sim1.X_series[0])
+axs[1].plot(sim2.t_series, sim2.X_series[0])
+axs[2].plot(sim3.t_series, sim3.X_series[0])
 
 for ax in axs:
     ax.grid()

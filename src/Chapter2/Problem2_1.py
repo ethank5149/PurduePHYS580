@@ -56,12 +56,12 @@ sim3.run()
 # Plotting
 fig, ax = plt.subplots(2, 1,sharex=True)
 
-ax[0].plot(sim1.t_series, sim1.X_series[:,0], label=f"dt = {sim1.dt}")
-ax[0].plot(sim2.t_series, sim2.X_series[:,0], label=f"dt = {sim2.dt}")
-ax[0].plot(sim3.t_series, sim3.X_series[:,0], label=f"dt = {sim3.dt}")
-ax[1].plot(sim1.t_series, sim1.X_series[:,0]-v(sim1.t_series,m,P,v0), label=f"dt = {sim1.dt}")
-ax[1].plot(sim2.t_series, sim2.X_series[:,0]-v(sim2.t_series,m,P,v0), label=f"dt = {sim2.dt}")
-ax[1].plot(sim3.t_series, sim3.X_series[:,0]-v(sim3.t_series,m,P,v0), label=f"dt = {sim3.dt}")
+ax[0].plot(sim1.t_series, sim1.X_series[0], label=f"dt = {sim1.dt}")
+ax[0].plot(sim2.t_series, sim2.X_series[0], label=f"dt = {sim2.dt}")
+ax[0].plot(sim3.t_series, sim3.X_series[0], label=f"dt = {sim3.dt}")
+ax[1].plot(sim1.t_series, sim1.X_series[0]-v(sim1.t_series,m,P,v0), label=f"dt = {sim1.dt}")
+ax[1].plot(sim2.t_series, sim2.X_series[0]-v(sim2.t_series,m,P,v0), label=f"dt = {sim2.dt}")
+ax[1].plot(sim3.t_series, sim3.X_series[0]-v(sim3.t_series,m,P,v0), label=f"dt = {sim3.dt}")
 
 ax[0].legend()
 ax[0].grid()

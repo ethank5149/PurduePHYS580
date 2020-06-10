@@ -46,24 +46,23 @@ dx_0 = 40
 
 sim = ODE(partial(rhs, m=m), np.array([dx_0,]), ti=0, dt=0.1, tf=10)
 sim.run()
-sim.store()
 
 # Plotting
 fig, (ax1,ax2,ax3) = plt.subplots(3, 1,sharex=True)
 
-ax1.plot(sim.t_series, sim.X_series[:, 0], label="Model")
+ax1.plot(sim.t_series, sim.X_series[0], label="Model")
 ax1.plot(sim.t_series, exact(sim.t_series,m,dx_0), label="Exact")
 ax1.legend()
 ax1.grid()
 ax1.set_xlabel("t")
 ax1.set_ylabel(r"$\frac{dx}{dt}$")
 
-ax2.plot(sim.t_series, sim.X_series[:, 0]-exact(sim.t_series,m,dx_0))
+ax2.plot(sim.t_series, sim.X_series[0]-exact(sim.t_series,m,dx_0))
 ax2.grid()
 ax2.set_xlabel("t")
 ax2.set_ylabel("Error")
 
-ax3.plot(sim.t_series, 100*(sim.X_series[:, 0]-exact(sim.t_series,m,dx_0))/exact(sim.t_series,m,dx_0))
+ax3.plot(sim.t_series, 100*(sim.X_series[0]-exact(sim.t_series,m,dx_0))/exact(sim.t_series,m,dx_0))
 ax3.grid()
 ax3.set_xlabel("t")
 ax3.set_ylabel("% Error")

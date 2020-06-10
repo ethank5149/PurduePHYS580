@@ -1,6 +1,6 @@
 ########################################################################################################################
 #     ========     |  Constants                                                                                        #
-#     \\           |  A basic class for physical constants                                                             #
+#     \\           |  Basic classes for physical constants                                                             #
 #      \\          |                                                                                                   #
 #      //          |  Author: Ethan Knox                                                                               #
 #     //           |  Website: https://www.github.com/ethank5149                                                       #

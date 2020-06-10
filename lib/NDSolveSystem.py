@@ -42,6 +42,7 @@ c_4_2 = c_4_3 = (1-2**(1/3))/(2*(2-2**(1/3)))
 d_4_1 = d_4_3 = 1/(2-2**(1/3))
 d_4_2, d_4_4 = -2**(1/3)/(2-2**(1/3)), 0
 
+
 class ODE:
     def __init__(self, rhs, X0, dt=0.01, ti=0, tf=1, terminate=lambda *args: False, method='euler', eps=0.01):
         self.X = X0  # Initial State
@@ -111,7 +112,7 @@ class ODE:
             self.update()
             if self.terminate(self.X):
                 break
-        self.X_series = np.array(self.X_series)
+        self.X_series = np.array(self.X_series).T
         self.t_series = np.array(self.t_series)
 
     def store(self, filename="output.dat"):

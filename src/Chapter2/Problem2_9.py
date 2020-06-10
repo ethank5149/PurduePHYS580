@@ -101,17 +101,17 @@ for sim in sims:
 
 # Plotting
 fig, ax = plt.subplots(1,1)
-ax.plot(sims_isothermal[0].X_series[:,0]/1000, sims_isothermal[0].X_series[:,1]/1000,'r-.',
+ax.plot(sims_isothermal[0].X_series[0]/1000, sims_isothermal[0].X_series[1]/1000,'r-.',
         label=rf"Isothermal, $\theta = 35^{{\circ}}$")
-ax.plot(sims_isothermal[1].X_series[:,0]/1000, sims_isothermal[1].X_series[:,1]/1000,'b-.',
+ax.plot(sims_isothermal[1].X_series[0]/1000, sims_isothermal[1].X_series[1]/1000,'b-.',
         label=rf"Isothermal, $\theta = 45^{{\circ}}$")
-ax.plot(sims_adiabatic[0].X_series[:,0]/1000, sims_adiabatic[0].X_series[:,1]/1000,'r--',
+ax.plot(sims_adiabatic[0].X_series[0]/1000, sims_adiabatic[0].X_series[1]/1000,'r--',
         label=rf"$Adiabatic, \theta = 35^{{\circ}}$")
-ax.plot(sims_adiabatic[1].X_series[:,0]/1000, sims_adiabatic[1].X_series[:,1]/1000,'b--',
+ax.plot(sims_adiabatic[1].X_series[0]/1000, sims_adiabatic[1].X_series[1]/1000,'b--',
         label=rf"$Adiabatic, \theta = 45^{{\circ}}$")
-ax.plot(sims[0].X_series[:,0]/1000, sims[0].X_series[:,1]/1000,'r-',
+ax.plot(sims[0].X_series[0]/1000, sims[0].X_series[1]/1000,'r-',
         label=rf"$Control, \theta = 35^{{\circ}}$")
-ax.plot(sims[1].X_series[:,0]/1000, sims[1].X_series[:,1]/1000,'b-',
+ax.plot(sims[1].X_series[0]/1000, sims[1].X_series[1]/1000,'b-',
         label=rf"$Control, \theta = 45^{{\circ}}$")
 
 ax.legend()
@@ -123,24 +123,24 @@ plt.suptitle("Problem 2.9a")
 plt.savefig("../../figures/Chapter2/Problem2_9a",dpi=300)
 
 
-def scan_max_range(rhs,start_angle,end_angle,num_angles):
-    angles = np.linspace(start_angle,end_angle, num_angles)
-    initial_conditions = [np.array([x0, y0, v0 * np.cos(np.pi*angle/180), v0 * np.sin(np.pi*angle/180)]) for angle in angles]
-    simulations = [ODE(rhs, ic, ti=0, dt=0.01, tf=200, terminate=terminate) for ic in initial_conditions]
-    for simulation in simulations:
-        simulation.run()
-    return angles, np.array([simulation.X_series[-1, 0] for simulation in simulations])
-
-
 # Part B
-angles_adiabatic, ranges_adiabatic = scan_max_range(rhs_adiabatic,30,60,75)
-max_range_adiabatic = max(list(ranges_adiabatic))
-max_range_angle_adiabatic = angles_adiabatic[list(ranges_adiabatic).index(max_range_adiabatic)]
+import tqdm
+angles_adiabatic = np.linspace(np.pi/6,np.pi/3, 3*(60-30))
+ranges_adiabatic = []
+for _,angle in enumerate(tqdm.tqdm(angles_adiabatic,desc="Sweeping Adiabatic")):
+    y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
+    sim = ODE(rhs_adiabatic,y0,ti=0,dt=0.01,tf=200,terminate=terminate)
+    sim.run()
+    max_range = sim.X_series[0,-1]
+    ranges_adiabatic.append(max_range)
+
+max_range_adiabatic = max(ranges_adiabatic)
+max_range_angle_adiabatic = angles_adiabatic[ranges_adiabatic.index(max_range_adiabatic)]
 
 fig, ax = plt.subplots(1, 1)
-ax.plot(angles_adiabatic,ranges_adiabatic/1000)
-plt.axvline(x=max_range_angle_adiabatic,color='k')
-plt.axhline(y=max_range_adiabatic/1000,color='k')
+ax.plot((180/np.pi)*angles_adiabatic,np.array(ranges_adiabatic)/1000)
+plt.axvline(x=(180/np.pi)*max_range_angle_adiabatic,color='k')
+plt.axhline(y=np.array(max_range_adiabatic)/1000,color='k')
 ax.grid()
 ax.set_xlabel("Angle [deg]")
 ax.set_ylabel("Range [km]")
@@ -149,14 +149,22 @@ plt.suptitle("Problem 2.9b")
 plt.savefig("../../figures/Chapter2/Problem2_9b", dpi=300)
 
 # Part C
-angles_isothermal, ranges_isothermal = scan_max_range(rhs_isothermal,30,60,75)
-max_range_isothermal = max(list(ranges_isothermal))
-max_range_angle_isothermal = angles_isothermal[list(ranges_isothermal).index(max_range_isothermal)]
+angles_isothermal = np.linspace(np.pi/6,np.pi/3, 3*(60-30))
+ranges_isothermal = []
+for _,angle in enumerate(tqdm.tqdm(angles_adiabatic,desc="Sweeping Isothermal")):
+    y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
+    sim = ODE(rhs_isothermal,y0,ti=0,dt=0.01,tf=200,terminate=terminate)
+    sim.run()
+    max_range = sim.X_series[0,-1]
+    ranges_isothermal.append(max_range)
+
+max_range_isothermal = max(ranges_isothermal)
+max_range_angle_isothermal = angles_isothermal[ranges_isothermal.index(max_range_isothermal)]
 
 fig, ax = plt.subplots(1, 1)
-ax.plot(angles_isothermal,ranges_isothermal/1000)
-plt.axvline(x=max_range_angle_isothermal,color='k')
-plt.axhline(y=max_range_isothermal/1000,color='k')
+ax.plot((180/np.pi)*angles_isothermal,np.array(ranges_isothermal)/1000)
+plt.axvline(x=(180/np.pi)*max_range_angle_isothermal,color='k')
+plt.axhline(y=np.array(max_range_isothermal)/1000,color='k')
 ax.grid()
 ax.set_xlabel("Angle [deg]")
 ax.set_ylabel("Range [km]")

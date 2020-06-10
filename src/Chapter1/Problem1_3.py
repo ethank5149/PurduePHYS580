@@ -53,9 +53,9 @@ sim3.run()
 # Plotting
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sim1.t_series, sim1.X_series[:], label=f"b = {b1}")
-ax.plot(sim2.t_series, sim2.X_series[:], label=f"b = {b2}")
-ax.plot(sim3.t_series, sim3.X_series[:], label=f"b = {b3}")
+ax.plot(sim1.t_series, sim1.X_series[0], label=f"b = {b1}")
+ax.plot(sim2.t_series, sim2.X_series[0], label=f"b = {b2}")
+ax.plot(sim3.t_series, sim3.X_series[0], label=f"b = {b3}")
 ax.legend()
 ax.grid()
 ax.set_xlabel("t")

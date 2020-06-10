@@ -69,9 +69,9 @@ sim3.run()
 # Plotting
 fig, ax = plt.subplots(1,1)
 
-ax.plot(sim1.t_series, sim1.X_series[:,0], label=rf"$0^{{\circ}}$ Grade")
-ax.plot(sim2.t_series, sim2.X_series[:,0], label=rf"${angle_deg}^{{\circ}}$ Grade")
-ax.plot(sim3.t_series, sim3.X_series[:,0], label=rf"$-{angle_deg}^{{\circ}}$ Grade")
+ax.plot(sim1.t_series, sim1.X_series[0], label=rf"$0^{{\circ}}$ Grade")
+ax.plot(sim2.t_series, sim2.X_series[0], label=rf"${angle_deg}^{{\circ}}$ Grade")
+ax.plot(sim3.t_series, sim3.X_series[0], label=rf"$-{angle_deg}^{{\circ}}$ Grade")
 
 ax.legend()
 ax.grid()

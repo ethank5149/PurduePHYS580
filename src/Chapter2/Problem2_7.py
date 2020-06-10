@@ -96,17 +96,17 @@ for sim in sims_isothermal:
 
 # Plotting
 fig, ax = plt.subplots(1,1)
-ax.plot(sims_isothermal[0].X_series[:,0]/1000, sims_isothermal[0].X_series[:,1]/1000,'r-',
+ax.plot(sims_isothermal[0].X_series[0]/1000, sims_isothermal[0].X_series[1]/1000,'r-',
         label=rf"Isothermal, $\theta = 30^{{\circ}}$")
-ax.plot(sims_isothermal[1].X_series[:,0]/1000, sims_isothermal[1].X_series[:,1]/1000,'b-',
+ax.plot(sims_isothermal[1].X_series[0]/1000, sims_isothermal[1].X_series[1]/1000,'b-',
         label=rf"Isothermal, $\theta = 45^{{\circ}}$")
-ax.plot(sims_isothermal[2].X_series[:,0]/1000, sims_isothermal[2].X_series[:,1]/1000,'k-',
+ax.plot(sims_isothermal[2].X_series[0]/1000, sims_isothermal[2].X_series[1]/1000,'k-',
         label=rf"Isothermal, $\theta = 60^{{\circ}}$")
-ax.plot(sims_adiabatic[0].X_series[:,0]/1000, sims_adiabatic[0].X_series[:,1]/1000,'r--',
+ax.plot(sims_adiabatic[0].X_series[0]/1000, sims_adiabatic[0].X_series[1]/1000,'r--',
         label=rf"$Adiabatic, \theta = 30^{{\circ}}$")
-ax.plot(sims_adiabatic[1].X_series[:,0]/1000, sims_adiabatic[1].X_series[:,1]/1000,'b--',
+ax.plot(sims_adiabatic[1].X_series[0]/1000, sims_adiabatic[1].X_series[1]/1000,'b--',
         label=rf"$Adiabatic, \theta = 45^{{\circ}}$")
-ax.plot(sims_adiabatic[2].X_series[:,0]/1000, sims_adiabatic[2].X_series[:,1]/1000,'k--',
+ax.plot(sims_adiabatic[2].X_series[0]/1000, sims_adiabatic[2].X_series[1]/1000,'k--',
         label=rf"$Adiabatic, \theta = 60^{{\circ}}$")
 
 ax.legend()
@@ -128,17 +128,17 @@ for sim in sims_hot:
 
 # Plotting
 fig, ax = plt.subplots(1,1)
-ax.plot(sims_cold[0].X_series[:,0]/1000, sims_cold[0].X_series[:,1]/1000,'r-',
+ax.plot(sims_cold[0].X_series[0]/1000, sims_cold[0].X_series[1]/1000,'r-',
         label=rf"Cold, $\theta = 30^{{\circ}}$")
-ax.plot(sims_cold[1].X_series[:,0]/1000, sims_cold[1].X_series[:,1]/1000,'b-',
+ax.plot(sims_cold[1].X_series[0]/1000, sims_cold[1].X_series[1]/1000,'b-',
         label=rf"Cold, $\theta = 45^{{\circ}}$")
-ax.plot(sims_cold[2].X_series[:,0]/1000, sims_cold[2].X_series[:,1]/1000,'k-',
+ax.plot(sims_cold[2].X_series[0]/1000, sims_cold[2].X_series[1]/1000,'k-',
         label=rf"Cold, $\theta = 60^{{\circ}}$")
-ax.plot(sims_hot[0].X_series[:,0]/1000, sims_hot[0].X_series[:,1]/1000,'r--',
+ax.plot(sims_hot[0].X_series[0]/1000, sims_hot[0].X_series[1]/1000,'r--',
         label=rf"$Hot, \theta = 30^{{\circ}}$")
-ax.plot(sims_hot[1].X_series[:,0]/1000, sims_hot[1].X_series[:,1]/1000,'b--',
+ax.plot(sims_hot[1].X_series[0]/1000, sims_hot[1].X_series[1]/1000,'b--',
         label=rf"$Hot, \theta = 45^{{\circ}}$")
-ax.plot(sims_hot[2].X_series[:,0]/1000, sims_hot[2].X_series[:,1]/1000,'k--',
+ax.plot(sims_hot[2].X_series[0]/1000, sims_hot[2].X_series[1]/1000,'k--',
         label=rf"$Hot, \theta = 60^{{\circ}}$")
 
 ax.legend()
@@ -149,28 +149,104 @@ ax.set_title("Adiabatic Model, Hot vs. Cold Temperatures")
 plt.suptitle("Problem 2.7b")
 plt.savefig("../../figures/Chapter2/Problem2_7b",dpi=300)
 
+import tqdm
 # Part C
-def scan_max_range_temp(num_angles, num_temps):
-    temperatures = np.linspace(T_cold, T_hot, num_temps)
-    angles = np.linspace(np.pi/6, np.pi/3, num_angles)
-    initial_conditions = [np.array([x0, y0, v0 * np.cos(angle), v0 * np.sin(angle)]) for angle in angles]
-    functions = [partial(rhs_adiabatic, T=t) for t in temperatures]
-    max_ranges = []
-    for function in functions:
-        simulations = [ODE(function, ic, ti=0, dt=0.01, tf=200, terminate=terminate) for ic in initial_conditions]
-        for simulation in simulations:
-            simulation.run()
-        max_ranges.append(max([simulation.X_series[-1, 0] for simulation in simulations]))
-    return temperatures, np.array(max_ranges)
+angles = np.linspace(np.pi / 6, np.pi / 3, 30)
+temperatures = np.linspace(T_cold, T_hot, int(T_hot-T_cold))
+max_ranges = []
+for _,temperature in enumerate(tqdm.tqdm(temperatures,desc="Sweeping")):
+    max_range = 0
+    for angle in angles:
+        y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
+        sim = ODE(partial(rhs_adiabatic,T=temperature),y0,ti=0,dt=0.01,tf=400,terminate=terminate)
+        sim.run()
+        max_range = max([max_range,sim.X_series[0,-1]])
+    max_ranges.append(max_range/1000)
 
-
-temps, ranges = scan_max_range_temp(25, 25)
 # Plotting
 fig, ax = plt.subplots(1, 1)
-ax.plot(temps,ranges)
+ax.plot(temperatures-273.15, max_ranges)
 ax.grid()
-ax.set_xlabel("Temperature [K]")
+ax.set_xlabel("Temperature [C]")
 ax.set_ylabel("Range [km]")
 ax.set_title("Maximum Range Vs. Temperature")
 plt.suptitle("Problem 2.7c")
 plt.savefig("../../figures/Chapter2/Problem2_7c", dpi=300)
+
+# ##############################
+#
+# # Account for the fact that the data can be different sizes due to the termination condition
+# minx0 = min(np.size(adiabatic_x_0), np.size(isothermal_x_0))
+# minx1 = min(np.size(adiabatic_x_1), np.size(isothermal_x_1))
+# minx2 = min(np.size(adiabatic_x_2), np.size(isothermal_x_2))
+# miny0 = min(np.size(adiabatic_y_0), np.size(isothermal_y_0))
+# miny1 = min(np.size(adiabatic_y_1), np.size(isothermal_y_1))
+# miny2 = min(np.size(adiabatic_y_2), np.size(isothermal_y_2))
+# min0 = min(minx0, miny0)
+# min1 = min(minx1, miny1)
+# min2 = min(minx2, miny2)
+#
+# # Part A
+# # Adiabatic vs Isothermal, Normal Temperature
+#
+#
+# # Plotting
+# fig, ax = plt.subplots(1,1)
+# ax.plot(isothermal_x_0/1000, isothermal_y_0/1000,'r-', label=rf"Isothermal, $\theta = 30^{{\circ}}$")
+# ax.plot(isothermal_x_1/1000, isothermal_y_1/1000,'b-', label=rf"Isothermal, $\theta = 45^{{\circ}}$")
+# ax.plot(isothermal_x_2/1000, isothermal_y_2/1000,'k-', label=rf"Isothermal, $\theta = 60^{{\circ}}$")
+# ax.plot(adiabatic_x_0/1000, adiabatic_y_0/1000,'r--', label=rf"$Adiabatic, \theta = 30^{{\circ}}$")
+# ax.plot(adiabatic_x_1/1000, adiabatic_y_1/1000,'b--', label=rf"$Adiabatic, \theta = 45^{{\circ}}$")
+# ax.plot(adiabatic_x_2/1000, adiabatic_y_2/1000,'k--', label=rf"$Adiabatic, \theta = 60^{{\circ}}$")
+#
+# ax.legend()
+# ax.grid()
+# ax.set_xlabel("x [km]")
+# ax.set_ylabel("y [km]")
+# ax.set_title("Adiabatic vs. Isothermal Model")
+# plt.suptitle("Problem 2.7a")
+# plt.savefig("../../figures/Chapter2/Problem2_7a",dpi=300)
+#
+# # Part B
+#
+#
+# # Plotting
+# fig, ax = plt.subplots(1,1)
+# ax.plot(cold_x_0/1000, cold_y_0/1000,'r-', label=rf"Cold, $\theta = 30^{{\circ}}$")
+# ax.plot(cold_x_1/1000, cold_y_1/1000,'b-', label=rf"Cold, $\theta = 45^{{\circ}}$")
+# ax.plot(cold_x_2/1000, cold_y_2/1000,'k-', label=rf"Cold, $\theta = 60^{{\circ}}$")
+# ax.plot(hot_x_0/1000, hot_y_0/1000,'r--', label=rf"Hot, $\theta = 30^{{\circ}}$")
+# ax.plot(hot_x_1/1000, hot_y_1/1000,'b--', label=rf"Hot, $\theta = 45^{{\circ}}$")
+# ax.plot(hot_x_2/1000, hot_y_2/1000,'k--', label=rf"Hot, $\theta = 60^{{\circ}}$")
+#
+# ax.legend()
+# ax.grid()
+# ax.set_xlabel("x [km]")
+# ax.set_ylabel("y [km]")
+# ax.set_title("Adiabatic Model, Hot vs. Cold Temperatures")
+# plt.suptitle("Problem 2.7b")
+# plt.savefig("../../figures/Chapter2/Problem2_7b",dpi=300)
+#
+# import tqdm
+# # Part C
+# angles = np.linspace(np.pi / 6, np.pi / 3, 30)
+# temperatures = np.linspace(T_cold, T_hot, int(T_hot-T_cold))
+# max_ranges = []
+# for _,temperature in enumerate(tqdm.tqdm(temperatures,desc="Sweeping")):
+#     max_range = 0
+#     for angle in angles:
+#         y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
+#         sim = ODE(partial(rhs_adiabatic,T=temperature),y0,ti=0,dt=0.01,tf=400,terminate=terminate)
+#         sim.run()
+#         max_range = max([max_range,sim.X_series[0][-1]])
+#     max_ranges.append(max_range/1000)
+#
+# # Plotting
+# fig, ax = plt.subplots(1, 1)
+# ax.plot(temperatures-273.15, max_ranges)
+# ax.grid()
+# ax.set_xlabel("Temperature [C]")
+# ax.set_ylabel("Range [km]")
+# ax.set_title("Maximum Range Vs. Temperature")
+# plt.suptitle("Problem 2.7c")
+# plt.savefig("../../figures/Chapter2/Problem2_7c", dpi=300)
