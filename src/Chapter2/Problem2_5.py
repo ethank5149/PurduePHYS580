@@ -31,15 +31,15 @@ from matplotlib import pyplot as plt
 from functools import partial
 
 
-def rhs(t, X, m, P, C, rho, A,F0):
+def rhs(t, X, m, P, C, rho, A, F0):
     if F0*X[0] < P:
         return np.array([F0/m - 0.5 * C * rho * A * X[0] ** 2 / m, ])
     else:
-        return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m,])
+        return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m, ])
 
 
 def rhs_old(t, X, m, P, C, rho, A):
-    return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m,])
+    return np.array([P/(m*X[0])-0.5*C*rho*A*X[0]**2/m, ])
 
 
 power = 400
@@ -51,9 +51,11 @@ F_initial = power/v_star
 area = 0.33
 air_density = 1.225
 
-curried_rhs = partial(rhs, m=mass,P=power,C=drag_coeff,rho=air_density,A=area,F0=F_initial)
-curried_rhs_old = partial(rhs_old, m=mass,P=power,C=drag_coeff,rho=air_density,A=area)
-ic = np.array([v_initial,])  # Initial Condition
+curried_rhs = partial(rhs, m=mass, P=power, C=drag_coeff,
+                      rho=air_density, A=area, F0=F_initial)
+curried_rhs_old = partial(rhs_old, m=mass, P=power,
+                          C=drag_coeff, rho=air_density, A=area)
+ic = np.array([v_initial, ])  # Initial Condition
 
 sim1 = ODE(curried_rhs, ic, ti=0, dt=0.01, tf=50)
 sim2 = ODE(curried_rhs_old, ic, ti=0, dt=0.01, tf=50)
@@ -64,8 +66,8 @@ sim2.run()
 # Plotting
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sim1.t_series, sim1.X_series[0], label=f"New Method")
-ax.plot(sim2.t_series, sim2.X_series[0], label=f"Old Method")
+ax.plot(sim1.t, sim1.X_series[0], label=f"New Method")
+ax.plot(sim2.t, sim2.X_series[0], label=f"Old Method")
 
 ax.legend()
 ax.grid()
@@ -75,4 +77,4 @@ ax.set_ylabel(r"$v(t)$")
 
 plt.suptitle("Problem 2.5")
 plt.subplots_adjust(wspace=0.3)
-plt.savefig("../../figures/Chapter2/Problem2_5",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_5", dpi=300)

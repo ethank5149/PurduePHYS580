@@ -34,17 +34,18 @@ from functools import partial
 g = 9.81  # Gravitational Acceleration [m/s^2]
 
 
-def rhs(t, X, a,b):
-    return np.array([a-b*X[0],])
+def rhs(t, X, a, b):
+    return np.array([a-b*X[0], ])
+
 
 a = 9.81
 dx_0 = 0
-b1,b2,b3 = 1,2,3
+b1, b2, b3 = 1, 2, 3
 
 
-sim1 = ODE(partial(rhs, a=a,b=b1), np.array([dx_0,]), ti=0, dt=0.1, tf=10)
-sim2 = ODE(partial(rhs, a=a,b=b2), np.array([dx_0,]), ti=0, dt=0.1, tf=10)
-sim3 = ODE(partial(rhs, a=a,b=b3), np.array([dx_0,]), ti=0, dt=0.1, tf=10)
+sim1 = ODE(partial(rhs, a=a, b=b1), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
+sim2 = ODE(partial(rhs, a=a, b=b2), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
+sim3 = ODE(partial(rhs, a=a, b=b3), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
 
 sim1.run()
 sim2.run()
@@ -53,9 +54,9 @@ sim3.run()
 # Plotting
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sim1.t_series, sim1.X_series[0], label=f"b = {b1}")
-ax.plot(sim2.t_series, sim2.X_series[0], label=f"b = {b2}")
-ax.plot(sim3.t_series, sim3.X_series[0], label=f"b = {b3}")
+ax.plot(sim1.t, sim1.X_series[0], label=f"b = {b1}")
+ax.plot(sim2.t, sim2.X_series[0], label=f"b = {b2}")
+ax.plot(sim3.t, sim3.X_series[0], label=f"b = {b3}")
 ax.legend()
 ax.grid()
 ax.set_xlabel("t")
@@ -63,4 +64,4 @@ ax.set_ylabel(r"$v(t)$")
 
 plt.suptitle("Problem 1.3")
 plt.subplots_adjust(hspace=0.45)
-plt.savefig("../../figures/Chapter1/Problem1_3",dpi=300)
+plt.savefig("../../figures/Chapter1/Problem1_3", dpi=300)

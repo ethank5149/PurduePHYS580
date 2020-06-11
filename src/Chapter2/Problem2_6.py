@@ -39,52 +39,58 @@ def rhs(t, X):
 
 
 def terminate(X):
-    return X[1]<0
+    return X[1] < 0
 
 
 def deg_to_rad(theta):
     return np.pi*theta/180
 
 
-def x(t,x0,y0,dx0,dy0):
+def x(t, x0, y0, dx0, dy0):
     return x0+dx0*t
 
 
-def y(t,x0,y0,dx0,dy0):
+def y(t, x0, y0, dx0, dy0):
     return y0+dy0*t-0.5*g*t**2
+
 
 x0 = y0 = 0
 v0 = 700
-angles_deg = (30,35,40,45,50,55)
+angles_deg = (30, 35, 40, 45, 50, 55)
 
 angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
-ics = tuple([np.array([x0,y0,v0*np.cos(theta),v0*np.sin(theta)]) for theta in angles_rad])
+ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)])
+             for theta in angles_rad])
 
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=200,terminate=terminate) for ic in ics])
+sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=200, terminate=terminate)
+              for ic in ics])
 for sim in sims:
     sim.run()
 
-xs = tuple([x(sim.t_series,*(sim.X_series[:,0])) for sim in sims])
-ys = tuple([y(sim.t_series,*(sim.X_series[:,0])) for sim in sims])
+xs = tuple([x(sim.t, *(sim.X_series[:, 0])) for sim in sims])
+ys = tuple([y(sim.t, *(sim.X_series[:, 0])) for sim in sims])
 
 # Plotting
 # First Plot
-fig, ax = plt.subplots(1,1)
-for angle,sim in zip(angles_deg,sims):
-    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000, label=rf"$\theta = {angle}^{{\circ}}$")
+fig, ax = plt.subplots(1, 1)
+for angle, sim in zip(angles_deg, sims):
+    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000,
+            label=rf"$\theta = {angle}^{{\circ}}$")
 ax.legend()
 ax.grid()
 ax.set_xlabel("x [km]")
 ax.set_ylabel("y [km]")
 plt.suptitle("Problem 2.6a")
-plt.savefig("../../figures/Chapter2/Problem2_6a",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_6a", dpi=300)
 
 # Second Plot
-fig, (ax1,ax2) = plt.subplots(2,1,sharex=True)
-for angle,sim,_x in zip(angles_deg,sims,xs):
-    ax1.plot(sim.t_series, np.absolute(sim.X_series[0]-_x), label=rf"$\theta = {angle}^{{\circ}}$")
-for angle,sim,_y in zip(angles_deg,sims,ys):
-    ax2.plot(sim.t_series, np.absolute(sim.X_series[1]-_y), label=rf"$\theta = {angle}^{{\circ}}$")
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+for angle, sim, _x in zip(angles_deg, sims, xs):
+    ax1.plot(sim.t, np.absolute(
+        sim.X_series[0]-_x), label=rf"$\theta = {angle}^{{\circ}}$")
+for angle, sim, _y in zip(angles_deg, sims, ys):
+    ax2.plot(sim.t, np.absolute(
+        sim.X_series[1]-_y), label=rf"$\theta = {angle}^{{\circ}}$")
 
 ax1.legend()
 ax1.grid()
@@ -97,4 +103,4 @@ ax2.set_xlabel("t [s]")
 ax2.set_ylabel("y [m]")
 
 plt.suptitle("Problem 2.6b")
-plt.savefig("../../figures/Chapter2/Problem2_6b",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_6b", dpi=300)

@@ -35,38 +35,40 @@ g = 9.81  # Gravitational Acceleration [m/s^2]
 
 
 def rhs(t, X, m):
-    return np.array([-m*g,])
+    return np.array([-m*g, ])
 
 
 def exact(t, m, dx_0):
     return dx_0-m*g*t
 
+
 m = 1
 dx_0 = 40
 
-sim = ODE(partial(rhs, m=m), np.array([dx_0,]), ti=0, dt=0.1, tf=10)
+sim = ODE(partial(rhs, m=m), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
 sim.run()
 
 # Plotting
-fig, (ax1,ax2,ax3) = plt.subplots(3, 1,sharex=True)
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-ax1.plot(sim.t_series, sim.X_series[0], label="Model")
-ax1.plot(sim.t_series, exact(sim.t_series,m,dx_0), label="Exact")
+ax1.plot(sim.t, sim.X_series[0], label="Model")
+ax1.plot(sim.t, exact(sim.t, m, dx_0), label="Exact")
 ax1.legend()
 ax1.grid()
 ax1.set_xlabel("t")
 ax1.set_ylabel(r"$\frac{dx}{dt}$")
 
-ax2.plot(sim.t_series, sim.X_series[0]-exact(sim.t_series,m,dx_0))
+ax2.plot(sim.t, sim.X_series[0]-exact(sim.t, m, dx_0))
 ax2.grid()
 ax2.set_xlabel("t")
 ax2.set_ylabel("Error")
 
-ax3.plot(sim.t_series, 100*(sim.X_series[0]-exact(sim.t_series,m,dx_0))/exact(sim.t_series,m,dx_0))
+ax3.plot(sim.t, 100*(sim.X_series[0] -
+                     exact(sim.t, m, dx_0))/exact(sim.t, m, dx_0))
 ax3.grid()
 ax3.set_xlabel("t")
 ax3.set_ylabel("% Error")
 
 plt.suptitle("Problem 1.2")
 plt.subplots_adjust(hspace=0.45)
-plt.savefig("../../figures/Chapter1/Problem1_2",dpi=300)
+plt.savefig("../../figures/Chapter1/Problem1_2", dpi=300)

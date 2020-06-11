@@ -61,35 +61,44 @@ v0 = 10000
 angles_deg = (30, 45, 60)
 
 angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
-ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)]) for theta in angles_rad])
+ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)])
+             for theta in angles_rad])
 
 # Part A
 # Varying vs Constant Gravity
-sims_varying = tuple([ODE(rhs_varying_g, ic, ti=0, dt=0.01, tf=400,terminate=terminate) for ic in ics])
+sims_varying = tuple([ODE(rhs_varying_g, ic, ti=0, dt=0.01,
+                          tf=400, terminate=terminate) for ic in ics])
 for sim in sims_varying:
     sim.run()
-sims_constant = tuple([ODE(rhs_constant_g, ic, ti=0, dt=0.01, tf=400,terminate=terminate) for ic in ics])
+sims_constant = tuple([ODE(rhs_constant_g, ic, ti=0,
+                           dt=0.01, tf=400, terminate=terminate) for ic in ics])
 for sim in sims_constant:
     sim.run()
 
-minx0 = min(np.size(sims_varying[0].X_series[0]),np.size(sims_constant[0].X_series[0]))
-minx1 = min(np.size(sims_varying[1].X_series[0]),np.size(sims_constant[1].X_series[0]))
-minx2 = min(np.size(sims_varying[2].X_series[0]),np.size(sims_constant[2].X_series[0]))
-miny0 = min(np.size(sims_varying[0].X_series[1]),np.size(sims_constant[0].X_series[1]))
-miny1 = min(np.size(sims_varying[1].X_series[1]),np.size(sims_constant[1].X_series[1]))
-miny2 = min(np.size(sims_varying[2].X_series[1]),np.size(sims_constant[2].X_series[1]))
-min0 = min(minx0,miny0)
-min1 = min(minx1,miny1)
-min2 = min(minx2,miny2)
+minx0 = min(np.size(sims_varying[0].X_series[0]),
+            np.size(sims_constant[0].X_series[0]))
+minx1 = min(np.size(sims_varying[1].X_series[0]),
+            np.size(sims_constant[1].X_series[0]))
+minx2 = min(np.size(sims_varying[2].X_series[0]),
+            np.size(sims_constant[2].X_series[0]))
+miny0 = min(np.size(sims_varying[0].X_series[1]),
+            np.size(sims_constant[0].X_series[1]))
+miny1 = min(np.size(sims_varying[1].X_series[1]),
+            np.size(sims_constant[1].X_series[1]))
+miny2 = min(np.size(sims_varying[2].X_series[1]),
+            np.size(sims_constant[2].X_series[1]))
+min0 = min(minx0, miny0)
+min1 = min(minx1, miny1)
+min2 = min(minx2, miny2)
 
 # Plotting
-fig, ax = plt.subplots(1,1)
-ax.plot((sims_varying[0].X_series[0,:min0]-sims_constant[0].X_series[0,:min0])/1000,
-        (sims_varying[0].X_series[1,:min0]-sims_constant[0].X_series[1,:min0])/1000,label=rf"$\theta = 30^{{\circ}}$")
-ax.plot((sims_varying[1].X_series[0,:min1]-sims_constant[1].X_series[0,:min1])/1000,
-        (sims_varying[1].X_series[1,:min1]-sims_constant[1].X_series[1,:min1])/1000, label=rf"$\theta = 45^{{\circ}}$")
-ax.plot((sims_varying[2].X_series[0,:min2]-sims_constant[2].X_series[0,:min2])/1000,
-        (sims_varying[2].X_series[1,:min2]-sims_constant[2].X_series[1,:min2])/1000, label=rf"$\theta = 60^{{\circ}}$")
+fig, ax = plt.subplots(1, 1)
+ax.plot((sims_varying[0].X_series[0, :min0]-sims_constant[0].X_series[0, :min0])/1000,
+        (sims_varying[0].X_series[1, :min0]-sims_constant[0].X_series[1, :min0])/1000, label=rf"$\theta = 30^{{\circ}}$")
+ax.plot((sims_varying[1].X_series[0, :min1]-sims_constant[1].X_series[0, :min1])/1000,
+        (sims_varying[1].X_series[1, :min1]-sims_constant[1].X_series[1, :min1])/1000, label=rf"$\theta = 45^{{\circ}}$")
+ax.plot((sims_varying[2].X_series[0, :min2]-sims_constant[2].X_series[0, :min2])/1000,
+        (sims_varying[2].X_series[1, :min2]-sims_constant[2].X_series[1, :min2])/1000, label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
 ax.grid()
@@ -97,16 +106,16 @@ ax.set_xlabel("x [km]")
 ax.set_ylabel("y [km]")
 ax.set_title("Varying - Constant")
 plt.suptitle("Problem 2.8a")
-plt.savefig("../../figures/Chapter2/Problem2_8a",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_8a", dpi=300)
 
 # Part B
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1, 1)
 
-ax.plot(sims_varying[0].t_series[:minx0],(sims_varying[0].X_series[0,:minx0]-sims_constant[0].X_series[0,:minx0])/1000,
+ax.plot(sims_varying[0].t[:minx0], (sims_varying[0].X_series[0, :minx0]-sims_constant[0].X_series[0, :minx0])/1000,
         label=rf"$\theta = 30^{{\circ}}$")
-ax.plot(sims_varying[1].t_series[:minx1],(sims_varying[1].X_series[0,:minx1]-sims_constant[1].X_series[0,:minx1])/1000,
+ax.plot(sims_varying[1].t[:minx1], (sims_varying[1].X_series[0, :minx1]-sims_constant[1].X_series[0, :minx1])/1000,
         label=rf"$\theta = 45^{{\circ}}$")
-ax.plot(sims_varying[2].t_series[:minx2],(sims_varying[2].X_series[0,:minx2]-sims_constant[2].X_series[0,:minx2])/1000,
+ax.plot(sims_varying[2].t[:minx2], (sims_varying[2].X_series[0, :minx2]-sims_constant[2].X_series[0, :minx2])/1000,
         label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
@@ -115,16 +124,16 @@ ax.set_xlabel("t [s]")
 ax.set_ylabel("x [km]")
 ax.set_title("Varying - Constant")
 plt.suptitle("Problem 2.8b")
-plt.savefig("../../figures/Chapter2/Problem2_8b",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_8b", dpi=300)
 
 # Part C
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1, 1)
 
-ax.plot(sims_varying[0].t_series[:miny0],(sims_varying[0].X_series[1,:miny0]-sims_constant[0].X_series[1,:miny0])/1000,
+ax.plot(sims_varying[0].t[:miny0], (sims_varying[0].X_series[1, :miny0]-sims_constant[0].X_series[1, :miny0])/1000,
         label=rf"$\theta = 30^{{\circ}}$")
-ax.plot(sims_varying[1].t_series[:miny1],(sims_varying[1].X_series[1,:miny1]-sims_constant[1].X_series[1,:miny1])/1000,
+ax.plot(sims_varying[1].t[:miny1], (sims_varying[1].X_series[1, :miny1]-sims_constant[1].X_series[1, :miny1])/1000,
         label=rf"$\theta = 45^{{\circ}}$")
-ax.plot(sims_varying[2].t_series[:miny2],(sims_varying[2].X_series[1,:miny2]-sims_constant[2].X_series[1,:miny2])/1000,
+ax.plot(sims_varying[2].t[:miny2], (sims_varying[2].X_series[1, :miny2]-sims_constant[2].X_series[1, :miny2])/1000,
         label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
@@ -133,4 +142,4 @@ ax.set_xlabel("t [s]")
 ax.set_ylabel("y [km]")
 ax.set_title("Varying - Constant")
 plt.suptitle("Problem 2.8c")
-plt.savefig("../../figures/Chapter2/Problem2_8c",dpi=300)
+plt.savefig("../../figures/Chapter2/Problem2_8c", dpi=300)
