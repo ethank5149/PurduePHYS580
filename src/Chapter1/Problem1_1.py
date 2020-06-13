@@ -25,51 +25,38 @@
 ########################################################################################################################
 
 
-from functools import partial
-
 import numpy as np
 from matplotlib import pyplot as plt
-
-from lib.NDSolveSystem import ODE
+from lib.DSolve import euler
 
 
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
 
 
-# Function Definitions
 def rhs(t, X):
     return np.array([-g, ])
 
 
 # Define an initial condition
 x0_0 = 100
+t1 = np.linspace(0,10,20)  # dt = 0.5
+t2 = np.linspace(0,10,40)  # dt = 0.25
+t3 = np.linspace(0,10,50)  # = dt = 0.2
 
-# Instantiate the simulations
-sim1 = ODE(partial(rhs), np.array([x0_0, ]),
-           ti=0, dt=0.3, tf=10, method='euler')
-sim2 = ODE(partial(rhs), np.array([x0_0, ]),
-           ti=0, dt=0.2, tf=10, method='euler')
-sim3 = ODE(partial(rhs), np.array([x0_0, ]),
-           ti=0, dt=0.1, tf=10, method='euler')
-
-# Run the simulations
-sim1.run()
-sim2.run()
-sim3.run()
+y1 = euler(rhs,[x0_0,],t1)[0]
+y2 = euler(rhs,[x0_0,],t2)[0]
+y3 = euler(rhs,[x0_0,],t3)[0]
 
 # Plot results
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-ax1.plot(sim1.t, sim1.X_series[0], label=f"dt = {sim1.dt}")
-ax1.plot(sim2.t, sim2.X_series[0], label=f"dt = {sim2.dt}")
-ax1.plot(sim3.t, sim3.X_series[0], label=f"dt = {sim3.dt}")
+ax1.plot(t1, y1, label=f"dt = 0.5")
+ax1.plot(t2, y2, label=f"dt = 0.25")
+ax1.plot(t3, y3, label=f"dt = 0.2")
 
-ax2.plot(sim1.t, 100 * (sim1.X_series[0] - (x0_0 - g * sim1.t)
-                        ) / (x0_0 - g * sim1.t), label=f"dt = {sim1.dt}")
-ax2.plot(sim2.t, 100 * (sim2.X_series[0] - (x0_0 - g * sim2.t)
-                        ) / (x0_0 - g * sim2.t), label=f"dt = {sim2.dt}")
-ax2.plot(sim3.t, 100 * (sim3.X_series[0] - (x0_0 - g * sim3.t)
-                        ) / (x0_0 - g * sim3.t), label=f"dt = {sim3.dt}")
+ax2.plot(t1, 100*(y1 - (x0_0 - g*t1))/(x0_0 - g*t1), label=f"dt = 0.5")
+ax2.plot(t2, 100*(y2 - (x0_0 - g*t2))/(x0_0 - g*t2), label=f"dt = 0.25")
+ax2.plot(t3, 100*(y3 - (x0_0 - g*t3))/(x0_0 - g*t3), label=f"dt = 0.2")
 
 ax1.set_title('y(t)')
 ax1.legend()
@@ -83,6 +70,6 @@ ax2.grid()
 ax2.set_xlabel("t")
 ax2.set_ylabel(r"$\frac{dy}{dt}$")
 
-plt.suptitle("Problem 1.1")  # \n"+r"$v(t)=v_0-gt$")
+plt.suptitle("Problem 1.1")
 plt.subplots_adjust(hspace=0.3, top=0.85)
 plt.savefig("../../figures/Chapter1/Problem1_1", dpi=300)

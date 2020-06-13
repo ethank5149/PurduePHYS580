@@ -25,7 +25,7 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE
+from lib.DSolve import euler
 from lib import Constants
 import numpy as np
 from matplotlib import pyplot as plt
@@ -82,37 +82,30 @@ def deg_to_rad(theta):
 
 x0 = y0 = 0
 v0 = 700
-angles_deg = (35, 45)
-
-angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
-ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)]) for theta in angles_rad])
+angles = (35, 45)
+t = np.linspace(0,200,20000)
+ic0 = [x0, y0, v0*np.cos(np.pi*angles[0]/180), v0*np.sin(np.pi*angles[0]/180)]
+ic1 = [x0, y0, v0*np.cos(np.pi*angles[1]/180), v0*np.sin(np.pi*angles[1]/180)]
 
 # Part A
 # Adiabatic vs Isothermal, Normal Temperature
-sims_adiabatic = tuple([ODE(rhs_adiabatic, ic, ti=0, dt=0.01, tf=200,terminate=terminate) for ic in ics])
-for sim in sims_adiabatic:
-    sim.run()
-sims_isothermal = tuple([ODE(rhs_isothermal, ic, ti=0, dt=0.01, tf=200,terminate=terminate) for ic in ics])
-for sim in sims_isothermal:
-    sim.run()
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=200,terminate=terminate) for ic in ics])
-for sim in sims:
-    sim.run()
+soln00 = euler(rhs_adiabatic, ic0, t,terminate=terminate)
+soln01 = euler(rhs_adiabatic, ic1, t,terminate=terminate)
+
+soln10 = euler(rhs_isothermal, ic0, t,terminate=terminate)
+soln11 = euler(rhs_isothermal, ic1, t,terminate=terminate)
+
+soln20 = euler(rhs, ic0, t,terminate=terminate)
+soln21 = euler(rhs, ic1, t,terminate=terminate)
 
 # Plotting
 fig, ax = plt.subplots(1,1)
-ax.plot(sims_isothermal[0].X_series[0]/1000, sims_isothermal[0].X_series[1]/1000,'r-.',
-        label=rf"Isothermal, $\theta = 35^{{\circ}}$")
-ax.plot(sims_isothermal[1].X_series[0]/1000, sims_isothermal[1].X_series[1]/1000,'b-.',
-        label=rf"Isothermal, $\theta = 45^{{\circ}}$")
-ax.plot(sims_adiabatic[0].X_series[0]/1000, sims_adiabatic[0].X_series[1]/1000,'r--',
-        label=rf"$Adiabatic, \theta = 35^{{\circ}}$")
-ax.plot(sims_adiabatic[1].X_series[0]/1000, sims_adiabatic[1].X_series[1]/1000,'b--',
-        label=rf"$Adiabatic, \theta = 45^{{\circ}}$")
-ax.plot(sims[0].X_series[0]/1000, sims[0].X_series[1]/1000,'r-',
-        label=rf"$Control, \theta = 35^{{\circ}}$")
-ax.plot(sims[1].X_series[0]/1000, sims[1].X_series[1]/1000,'b-',
-        label=rf"$Control, \theta = 45^{{\circ}}$")
+ax.plot(soln10[0]/1000, soln10[1]/1000,'r-.', label=rf"Isothermal, $\theta = 35^{{\circ}}$")
+ax.plot(soln11[0]/1000, soln11[1]/1000,'b-.', label=rf"Isothermal, $\theta = 45^{{\circ}}$")
+ax.plot(soln00[0]/1000, soln00[1]/1000,'r--', label=rf"Adiabatic, $\theta = 35^{{\circ}}$")
+ax.plot(soln01[0]/1000, soln01[1]/1000,'b--', label=rf"Adiabatic, $\theta = 45^{{\circ}}$")
+ax.plot(soln20[0]/1000, soln20[1]/1000,'r-', label=rf"$Control, \theta = 35^{{\circ}}$")
+ax.plot(soln21[0]/1000, soln21[1]/1000,'b-', label=rf"$Control, \theta = 45^{{\circ}}$")
 
 ax.legend()
 ax.grid()
@@ -129,9 +122,8 @@ angles_adiabatic = np.linspace(np.pi/6,np.pi/3, 3*(60-30))
 ranges_adiabatic = []
 for _,angle in enumerate(tqdm.tqdm(angles_adiabatic,desc="Sweeping Adiabatic")):
     y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
-    sim = ODE(rhs_adiabatic,y0,ti=0,dt=0.01,tf=200,terminate=terminate)
-    sim.run()
-    max_range = sim.X_series[0,-1]
+    soln = euler(rhs_adiabatic,y0,t,terminate=terminate)
+    max_range = soln[0,-1]
     ranges_adiabatic.append(max_range)
 
 max_range_adiabatic = max(ranges_adiabatic)
@@ -153,9 +145,8 @@ angles_isothermal = np.linspace(np.pi/6,np.pi/3, 3*(60-30))
 ranges_isothermal = []
 for _,angle in enumerate(tqdm.tqdm(angles_adiabatic,desc="Sweeping Isothermal")):
     y0 = [0, 0, v0 * np.cos(angle), v0 * np.sin(angle)]
-    sim = ODE(rhs_isothermal,y0,ti=0,dt=0.01,tf=200,terminate=terminate)
-    sim.run()
-    max_range = sim.X_series[0,-1]
+    soln = euler(rhs_isothermal,y0,t,terminate=terminate)
+    max_range = soln[0,-1]
     ranges_isothermal.append(max_range)
 
 max_range_isothermal = max(ranges_isothermal)

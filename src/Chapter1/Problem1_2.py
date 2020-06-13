@@ -26,6 +26,7 @@
 
 # Including
 from lib.NDSolveSystem import ODE, SymplecticODE
+from lib.DSolve import euler, rk4
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
@@ -44,27 +45,25 @@ def exact(t, m, dx_0):
 
 m = 1
 dx_0 = 40
-
-sim = ODE(partial(rhs, m=m), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
-sim.run()
+t = np.linspace(0,10,100)  # dt = 0.1
+y = euler(partial(rhs, m=m), [dx_0,], t)[0]
 
 # Plotting
 fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-ax1.plot(sim.t, sim.X_series[0], label="Model")
-ax1.plot(sim.t, exact(sim.t, m, dx_0), label="Exact")
+ax1.plot(t, y, label="Model")
+ax1.plot(t, exact(t, m, dx_0), label="Exact")
 ax1.legend()
 ax1.grid()
 ax1.set_xlabel("t")
 ax1.set_ylabel(r"$\frac{dx}{dt}$")
 
-ax2.plot(sim.t, sim.X_series[0]-exact(sim.t, m, dx_0))
+ax2.plot(t, y-exact(t, m, dx_0))
 ax2.grid()
 ax2.set_xlabel("t")
 ax2.set_ylabel("Error")
 
-ax3.plot(sim.t, 100*(sim.X_series[0] -
-                     exact(sim.t, m, dx_0))/exact(sim.t, m, dx_0))
+ax3.plot(t, 100*(y - exact(t, m, dx_0))/exact(t, m, dx_0))
 ax3.grid()
 ax3.set_xlabel("t")
 ax3.set_ylabel("% Error")

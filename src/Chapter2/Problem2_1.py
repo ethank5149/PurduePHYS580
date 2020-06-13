@@ -25,47 +25,44 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE, SymplecticODE
+from lib.DSolve import euler
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
 
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
+P = 400  # Power [W]
+m = 70  # mass [kg]
+v0 = 4  # Initial velocity [m/s]
 
 
-def rhs(t, X, m, P):
+def rhs(t, X):
     return np.array([P/(m*X[0]), ])
 
 
-def v(t, m, P, v0):
+def v(t):
     return np.sqrt(2*P*t/m+v0**2)
 
 
-P = 400
-m = 70
-v0 = 4
+t1 = np.linspace(0, 200, 400)  # dt = 0.5
+t2 = np.linspace(0, 200, 800)  # dt = 0.25
+t3 = np.linspace(0, 200, 1600)  # dt = 0.125
 
-sim1 = ODE(partial(rhs, m=m, P=P), np.array([v0, ]), ti=0, dt=0.5, tf=200)
-sim2 = ODE(partial(rhs, m=m, P=P), np.array([v0, ]), ti=0, dt=0.25, tf=200)
-sim3 = ODE(partial(rhs, m=m, P=P), np.array([v0, ]), ti=0, dt=0.125, tf=200)
+y1 = euler(rhs, [v0, ], t1)
+y2 = euler(rhs, [v0, ], t2)
+y3 = euler(rhs, [v0, ], t3)
 
-sim1.run()
-sim2.run()
-sim3.run()
 
 # Plotting
 fig, ax = plt.subplots(2, 1, sharex=True)
 
-ax[0].plot(sim1.t, sim1.X_series[0], label=f"dt = {sim1.dt}")
-ax[0].plot(sim2.t, sim2.X_series[0], label=f"dt = {sim2.dt}")
-ax[0].plot(sim3.t, sim3.X_series[0], label=f"dt = {sim3.dt}")
-ax[1].plot(sim1.t, sim1.X_series[0] -
-           v(sim1.t, m, P, v0), label=f"dt = {sim1.dt}")
-ax[1].plot(sim2.t, sim2.X_series[0] -
-           v(sim2.t, m, P, v0), label=f"dt = {sim2.dt}")
-ax[1].plot(sim3.t, sim3.X_series[0] -
-           v(sim3.t, m, P, v0), label=f"dt = {sim3.dt}")
+ax[0].plot(t1, y1[0], label="dt = 0.5")
+ax[0].plot(t2, y2[0], label="dt = 0.25")
+ax[0].plot(t3, y3[0], label="dt = 0.125")
+ax[1].plot(t1, y1[0] - v(t1), label="dt = 0.5")
+ax[1].plot(t2, y2[0] - v(t2), label="dt = 0.25")
+ax[1].plot(t3, y3[0] - v(t3), label="dt = 0.125")
 
 ax[0].legend()
 ax[0].grid()

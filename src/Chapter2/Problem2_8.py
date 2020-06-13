@@ -25,7 +25,7 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE
+from lib.DSolve import euler
 from lib import Constants
 import numpy as np
 from matplotlib import pyplot as plt
@@ -36,6 +36,8 @@ earth = Constants.Earth()
 g = 9.81  # Gravitational acceleration [m/s^2]
 m = 47.5  # Mass [kg] of a 10 cm lead sphere
 B2_ref = 4.0e-5 * m  # Air resistance coefficient
+x0 = y0 = 0
+v0 = 10000
 
 
 def rhs_varying_g(t, X):
@@ -52,53 +54,41 @@ def terminate(X):
     return X[1] < 0
 
 
-def deg_to_rad(theta):
-    return np.pi*theta/180
+def f_ics(theta):
+    return [x0, y0, v0*np.cos(np.pi*theta/180), v0*np.sin(np.pi*theta/180)]
 
 
-x0 = y0 = 0
-v0 = 10000
-angles_deg = (30, 45, 60)
 
-angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
-ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)])
-             for theta in angles_rad])
+angles = (30, 45, 60)
+t = np.linspace(0,400,40000)
 
 # Part A
 # Varying vs Constant Gravity
-sims_varying = tuple([ODE(rhs_varying_g, ic, ti=0, dt=0.01,
-                          tf=400, terminate=terminate) for ic in ics])
-for sim in sims_varying:
-    sim.run()
-sims_constant = tuple([ODE(rhs_constant_g, ic, ti=0,
-                           dt=0.01, tf=400, terminate=terminate) for ic in ics])
-for sim in sims_constant:
-    sim.run()
+soln00 = euler(rhs_varying_g, f_ics(angles[0]), t, terminate=terminate)
+soln01 = euler(rhs_varying_g, f_ics(angles[1]), t, terminate=terminate)
+soln02 = euler(rhs_varying_g, f_ics(angles[2]), t, terminate=terminate)
+soln10 = euler(rhs_constant_g, f_ics(angles[0]), t, terminate=terminate)
+soln11 = euler(rhs_constant_g, f_ics(angles[1]), t, terminate=terminate)
+soln12 = euler(rhs_constant_g, f_ics(angles[2]), t, terminate=terminate)
 
-minx0 = min(np.size(sims_varying[0].X_series[0]),
-            np.size(sims_constant[0].X_series[0]))
-minx1 = min(np.size(sims_varying[1].X_series[0]),
-            np.size(sims_constant[1].X_series[0]))
-minx2 = min(np.size(sims_varying[2].X_series[0]),
-            np.size(sims_constant[2].X_series[0]))
-miny0 = min(np.size(sims_varying[0].X_series[1]),
-            np.size(sims_constant[0].X_series[1]))
-miny1 = min(np.size(sims_varying[1].X_series[1]),
-            np.size(sims_constant[1].X_series[1]))
-miny2 = min(np.size(sims_varying[2].X_series[1]),
-            np.size(sims_constant[2].X_series[1]))
+minx0 = min(np.size(soln00[0]), np.size(soln10[0]))
+minx1 = min(np.size(soln01[0]), np.size(soln11[0]))
+minx2 = min(np.size(soln02[0]), np.size(soln12[0]))
+miny0 = min(np.size(soln00[1]), np.size(soln10[1]))
+miny1 = min(np.size(soln01[1]), np.size(soln11[1]))
+miny2 = min(np.size(soln02[1]), np.size(soln12[1]))
 min0 = min(minx0, miny0)
 min1 = min(minx1, miny1)
 min2 = min(minx2, miny2)
 
 # Plotting
 fig, ax = plt.subplots(1, 1)
-ax.plot((sims_varying[0].X_series[0, :min0]-sims_constant[0].X_series[0, :min0])/1000,
-        (sims_varying[0].X_series[1, :min0]-sims_constant[0].X_series[1, :min0])/1000, label=rf"$\theta = 30^{{\circ}}$")
-ax.plot((sims_varying[1].X_series[0, :min1]-sims_constant[1].X_series[0, :min1])/1000,
-        (sims_varying[1].X_series[1, :min1]-sims_constant[1].X_series[1, :min1])/1000, label=rf"$\theta = 45^{{\circ}}$")
-ax.plot((sims_varying[2].X_series[0, :min2]-sims_constant[2].X_series[0, :min2])/1000,
-        (sims_varying[2].X_series[1, :min2]-sims_constant[2].X_series[1, :min2])/1000, label=rf"$\theta = 60^{{\circ}}$")
+ax.plot((soln00[0, :min0]-soln10[0, :min0])/1000, (soln00[1, :min0]-soln10[1, :min0])/1000,
+        label=rf"$\theta = 30^{{\circ}}$")
+ax.plot((soln01[0, :min1]-soln11[0, :min1])/1000, (soln01[1, :min1]-soln11[1, :min1])/1000,
+        label=rf"$\theta = 45^{{\circ}}$")
+ax.plot((soln02[0, :min2]-soln12[0, :min2])/1000, (soln02[1, :min2]-soln12[1, :min2])/1000,
+        label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
 ax.grid()
@@ -111,12 +101,9 @@ plt.savefig("../../figures/Chapter2/Problem2_8a", dpi=300)
 # Part B
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sims_varying[0].t[:minx0], (sims_varying[0].X_series[0, :minx0]-sims_constant[0].X_series[0, :minx0])/1000,
-        label=rf"$\theta = 30^{{\circ}}$")
-ax.plot(sims_varying[1].t[:minx1], (sims_varying[1].X_series[0, :minx1]-sims_constant[1].X_series[0, :minx1])/1000,
-        label=rf"$\theta = 45^{{\circ}}$")
-ax.plot(sims_varying[2].t[:minx2], (sims_varying[2].X_series[0, :minx2]-sims_constant[2].X_series[0, :minx2])/1000,
-        label=rf"$\theta = 60^{{\circ}}$")
+ax.plot(t[:minx0], (soln00[0, :minx0]-soln10[0, :minx0])/1000, label=rf"$\theta = 30^{{\circ}}$")
+ax.plot(t[:minx1], (soln01[0, :minx1]-soln11[0, :minx1])/1000, label=rf"$\theta = 45^{{\circ}}$")
+ax.plot(t[:minx2], (soln02[0, :minx2]-soln12[0, :minx2])/1000, label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
 ax.grid()
@@ -129,12 +116,9 @@ plt.savefig("../../figures/Chapter2/Problem2_8b", dpi=300)
 # Part C
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sims_varying[0].t[:miny0], (sims_varying[0].X_series[1, :miny0]-sims_constant[0].X_series[1, :miny0])/1000,
-        label=rf"$\theta = 30^{{\circ}}$")
-ax.plot(sims_varying[1].t[:miny1], (sims_varying[1].X_series[1, :miny1]-sims_constant[1].X_series[1, :miny1])/1000,
-        label=rf"$\theta = 45^{{\circ}}$")
-ax.plot(sims_varying[2].t[:miny2], (sims_varying[2].X_series[1, :miny2]-sims_constant[2].X_series[1, :miny2])/1000,
-        label=rf"$\theta = 60^{{\circ}}$")
+ax.plot(t[:miny0], (soln00[1, :miny0]-soln10[1, :miny0])/1000, label=rf"$\theta = 30^{{\circ}}$")
+ax.plot(t[:miny1], (soln01[1, :miny1]-soln11[1, :miny1])/1000, label=rf"$\theta = 45^{{\circ}}$")
+ax.plot(t[:miny2], (soln02[1, :miny2]-soln12[1, :miny2])/1000, label=rf"$\theta = 60^{{\circ}}$")
 
 ax.legend()
 ax.grid()

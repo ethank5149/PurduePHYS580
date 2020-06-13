@@ -25,7 +25,7 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE, SymplecticODE
+from lib.DSolve import euler
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
@@ -49,39 +49,26 @@ def Nb(t, a, b, Na0, Nb0):
 ta1, ta2, ta3 = 1, 2, 4
 tb1, tb2, tb3 = 4, 2, 1
 Na0, Nb0 = 1, 0
-
-sim1 = ODE(partial(rhs, ta=ta1, tb=tb1),
-           np.array([Na0, Nb0]), ti=0, dt=0.1, tf=10)
-sim2 = ODE(partial(rhs, ta=ta2, tb=tb2),
-           np.array([Na0, Nb0]), ti=0, dt=0.1, tf=10)
-sim3 = ODE(partial(rhs, ta=ta3, tb=tb3),
-           np.array([Na0, Nb0]), ti=0, dt=0.1, tf=10)
-
-sim1.run()
-sim2.run()
-sim3.run()
+t = np.linspace(0,20,200)  # dt = 0.1
+y1 = euler(partial(rhs, ta=ta1, tb=tb1),[Na0, Nb0],t)
+y2 = euler(partial(rhs, ta=ta2, tb=tb2),[Na0, Nb0],t)
+y3 = euler(partial(rhs, ta=ta3, tb=tb3),[Na0, Nb0],t)
 
 # Plotting
 fig, axs = plt.subplots(2, 3)
 
-axs[0, 0].plot(sim1.t, sim1.X_series[0], label=r"$N_A$")
-axs[0, 0].plot(sim1.t, sim1.X_series[1], label=r"$N_B$")
-axs[0, 1].plot(sim2.t, sim2.X_series[0], label=r"$N_A$")
-axs[0, 1].plot(sim2.t, sim2.X_series[1], label=r"$N_B$")
-axs[0, 2].plot(sim3.t, sim3.X_series[0], label=r"$N_A$")
-axs[0, 2].plot(sim3.t, sim3.X_series[1], label=r"$N_B$")
-axs[1, 0].plot(sim1.t, sim1.X_series[0] -
-               Na(sim1.t, ta1, tb1, Na0, Nb0), label=r"$N_A$")
-axs[1, 0].plot(sim1.t, sim1.X_series[1] -
-               Nb(sim1.t, ta1, tb1, Na0, Nb0), label=r"$N_B$")
-axs[1, 1].plot(sim2.t, sim2.X_series[0] -
-               Na(sim2.t, ta2, tb2, Na0, Nb0), label=r"$N_A$")
-axs[1, 1].plot(sim2.t, sim2.X_series[1] -
-               Nb(sim2.t, ta2, tb2, Na0, Nb0), label=r"$N_B$")
-axs[1, 2].plot(sim3.t, sim3.X_series[0] -
-               Na(sim3.t, ta3, tb3, Na0, Nb0), label=r"$N_A$")
-axs[1, 2].plot(sim3.t, sim3.X_series[1] -
-               Nb(sim3.t, ta3, tb3, Na0, Nb0), label=r"$N_B$")
+axs[0, 0].plot(t, y1[0], label=r"$N_A$")
+axs[0, 0].plot(t, y1[1], label=r"$N_B$")
+axs[0, 1].plot(t, y2[0], label=r"$N_A$")
+axs[0, 1].plot(t, y2[1], label=r"$N_B$")
+axs[0, 2].plot(t, y3[0], label=r"$N_A$")
+axs[0, 2].plot(t, y3[1], label=r"$N_B$")
+axs[1, 0].plot(t, y1[0] - Na(t, ta1, tb1, Na0, Nb0), label=r"$N_A$")
+axs[1, 0].plot(t, y1[1] - Nb(t, ta1, tb1, Na0, Nb0), label=r"$N_B$")
+axs[1, 1].plot(t, y2[0] - Na(t, ta2, tb2, Na0, Nb0), label=r"$N_A$")
+axs[1, 1].plot(t, y2[1] - Nb(t, ta2, tb2, Na0, Nb0), label=r"$N_B$")
+axs[1, 2].plot(t, y3[0] - Na(t, ta3, tb3, Na0, Nb0), label=r"$N_A$")
+axs[1, 2].plot(t, y3[1] - Nb(t, ta3, tb3, Na0, Nb0), label=r"$N_B$")
 
 for i in range(2):
     for j in range(3):

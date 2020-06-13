@@ -26,7 +26,7 @@
 
 # Including
 # Including
-from lib.NDSolveSystem import ODE
+from lib.DSolve import euler
 from lib import Constants
 import numpy as np
 from matplotlib import pyplot as plt
@@ -36,44 +36,36 @@ from functools import partial
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
 w = 0.411  # Shoulder Width [m]
-air = Constants.Air()
-water = Constants.Water()
-
-
-def rhs(t, X, m, P, C, rho, theta, A):
-    return np.array([P/(m*X[0])-g*np.sin(theta)-0.5*C*rho*A*X[0]**2/m, ])
-
-
-P = 400
-m = 70
-v0 = 4
-C = 0.5
+P = 400  # Power [W]
+m = 70  # Mass [kg]
+v0 = 4  # Initial velocity [m/s]
+C = 0.5  # Drag coefficient
 angle_deg = 10
 angle = angle_deg*np.pi/180
 A = 0.33
+air = Constants.Air()
+rho = air.density
 
-curried_rhs_flat = partial(rhs, m=m, P=P, C=C, rho=air.density, theta=0, A=A)
-curried_rhs_incline = partial(
-    rhs, m=m, P=P, C=C, rho=air.density, theta=angle, A=A)
-curried_rhs_decline = partial(
-    rhs, m=m, P=P, C=C, rho=air.density, theta=-angle, A=A)
 
-ic = np.array([v0, ])
+def rhs(t, X, theta):
+    return np.array([P/(m*X[0])-g*np.sin(theta)-0.5*C*rho*A*X[0]**2/m, ])
 
-sim1 = ODE(curried_rhs_flat, ic, ti=0, dt=0.01, tf=100)
-sim2 = ODE(curried_rhs_incline, ic, ti=0, dt=0.01, tf=100)
-sim3 = ODE(curried_rhs_decline, ic, ti=0, dt=0.01, tf=100)
 
-sim1.run()
-sim2.run()
-sim3.run()
+curried_rhs_flat = partial(rhs, theta=0)
+curried_rhs_incline = partial(rhs, theta=angle)
+curried_rhs_decline = partial(rhs, theta=-angle)
+t = np.linspace(0, 100, 10000)
+
+y1 = euler(curried_rhs_flat, [v0, ], t)
+y2 = euler(curried_rhs_incline, [v0, ], t)
+y3 = euler(curried_rhs_decline, [v0, ], t)
 
 # Plotting
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sim1.t, sim1.X_series[0], label=rf"$0^{{\circ}}$ Grade")
-ax.plot(sim2.t, sim2.X_series[0], label=rf"${angle_deg}^{{\circ}}$ Grade")
-ax.plot(sim3.t, sim3.X_series[0], label=rf"$-{angle_deg}^{{\circ}}$ Grade")
+ax.plot(t, y1[0], label=rf"$0^{{\circ}}$ Grade")
+ax.plot(t, y2[0], label=rf"${angle_deg}^{{\circ}}$ Grade")
+ax.plot(t, y3[0], label=rf"$-{angle_deg}^{{\circ}}$ Grade")
 
 ax.legend()
 ax.grid()

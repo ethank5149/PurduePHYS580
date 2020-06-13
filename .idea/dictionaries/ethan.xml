@@ -5,6 +5,8 @@
       <w>coeff</w>
       <w>eulercromer</w>
       <w>heun</w>
+      <w>kutta</w>
+      <w>runge</w>
       <w>symplectic</w>
       <w>verlet</w>
     </words>

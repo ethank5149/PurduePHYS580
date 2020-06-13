@@ -25,13 +25,16 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE
-from lib import Constants
+from lib.DSolve import euler
+from lib.Constants import Earth, Air
+from lib.FindRoot import bisection, secant
 import numpy as np
+from functools import partial
 from matplotlib import pyplot as plt
 import matplotlib.patches as mpatches
-earth = Constants.Earth()
-air = Constants.Air()
+from scipy.optimize import minimize_scalar
+earth = Earth()
+air = Air()
 
 
 # Global Definitions
@@ -42,6 +45,8 @@ a = 6.5e-3  # Adiabatic model parameter [K/m]
 alpha = 2.5  # Adiabatic model parameter
 y_0 = 1.0e4  # k_B*T/mg [m]
 T_0 = 300  # Adiabatic model sea level temperature [K]
+x0 = y0 = 0
+v0 = 1000
 
 
 
@@ -55,28 +60,30 @@ def B2_eff(rho):
 
 def rhs(t, X):
     v = np.sqrt(X[2]**2+X[3]**2)
-    return np.array([X[2], X[3], -B2_eff(rho_adiabatic(X[1]))*v*X[2]/m,-earth.GM/(earth.radius+X[1])**2-B2_eff(rho_adiabatic(X[1]))*v*X[3]/m])
+    return np.array([X[2], X[3], -B2_eff(rho_adiabatic(X[1]))*v*X[2]/m,
+                     -earth.GM/(earth.radius+X[1])**2-B2_eff(rho_adiabatic(X[1]))*v*X[3]/m])
 
 
-def terminate(X):
-    return X[0]>0 and (X[1] < 0 and X[0]<distance_to_cliff) or (X[1] < elevation_of_cliff and X[0]>distance_to_cliff)
+def terminate(X, dist, elev):
+    return X[0]>0 and (X[1] < 0 and X[0]<dist) or (X[1] < elev and X[0]>dist)
 
 
-x0 = y0 = 0
-v0 = 1000
-angles = (30,35,40, 45,50,55, 60)
+def f_ics(v0, theta):
+    return [x0, y0, v0*np.cos(np.pi*theta/180), v0*np.sin(np.pi*theta/180)]
+
+
+angles = (30, 35, 40, 45, 50, 55, 60)
 distance_to_cliff = 10000
 elevation_of_cliff = 10000
+t = np.linspace(0, 400, 40000)
 
 # Part A
-ics = tuple([np.array([x0, y0, v0*np.cos(np.pi*theta/180), v0*np.sin(np.pi*theta/180)]) for theta in angles])
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate) for ic in ics])
-for sim in sims:
-    sim.run()
+solns = [euler(rhs, f_ics(v0, angle), t, terminate=partial(terminate,dist=distance_to_cliff,
+                                                       elev=elevation_of_cliff)) for angle in angles]
 
 fig, ax = plt.subplots(1, 1)
-for i,sim in enumerate(sims):
-    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000, label=rf"$\theta = {angles[i]}^{{\circ}}$")
+for angle, soln in zip(angles,solns):
+    ax.plot(soln[0]/1000, soln[1]/1000, label=rf"$\theta = {angle}^{{\circ}}$")
 
 if elevation_of_cliff<0:
     ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(distance_to_cliff/1000-plt.xlim()[0]),(0-plt.ylim()[0]),
@@ -102,20 +109,15 @@ plt.savefig("../../figures/Chapter2/Problem2_10a", dpi=300)
 
 
 # Part B
-x0 = y0 = 0
-v0 = 1000
-angles = (30,35,40, 45,50,55, 60)
-distance_to_cliff = 10000
 elevation_of_cliff = -10000
 
-ics = tuple([np.array([x0, y0, v0*np.cos(np.pi*theta/180), v0*np.sin(np.pi*theta/180)]) for theta in angles])
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate) for ic in ics])
-for sim in sims:
-    sim.run()
+solns = [euler(rhs, f_ics(v0, angle), t, terminate=partial(terminate,dist=distance_to_cliff,
+                                                       elev=elevation_of_cliff)) for angle in angles]
 
 fig, ax = plt.subplots(1, 1)
-for i,sim in enumerate(sims):
-    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000, label=rf"$\theta = {angles[i]}^{{\circ}}$")
+for angle, soln in zip(angles,solns):
+    ax.plot(soln[0]/1000, soln[1]/1000, label=rf"$\theta = {angle}^{{\circ}}$")
+
 
 if elevation_of_cliff<0:
     ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(distance_to_cliff/1000-plt.xlim()[0]),(0-plt.ylim()[0]),
@@ -139,133 +141,30 @@ ax.set_ylabel("y [km]")
 plt.suptitle("Problem 2.10b")
 plt.savefig("../../figures/Chapter2/Problem2_10b", dpi=300)
 
-# Part C
-x0 = y0 = 0
-v0 = 1000
-angle = 60
-velocities = (600,700,800,833.6379016603621, 900,1000)
-distance_to_cliff = 10000
-elevation_of_cliff = 10000
 
-ics = tuple([np.array([x0, y0, v*np.cos(np.pi/3), v*np.sin(np.pi/3)]) for v in velocities])
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate) for ic in ics])
-for sim in sims:
-    sim.run()
+# Part C
+# Fixing the launch angle to 60 degrees
+angle = 60
+# We then solve the resulting boundary value problem to determine the minimum velocity for a given cliff height
+
+
+def shoot(elev):
+    def f_comp(vel):
+        soln = euler(rhs, f_ics(vel, angle), t, terminate=partial(terminate, dist=distance_to_cliff, elev=elev))
+        return np.sqrt((soln[0, -1] - distance_to_cliff) ** 2 + (soln[1, -1] - elev) ** 2)
+
+    vel_opt = minimize_scalar(f_comp,bounds=(10,1000), method='bounded', tol=1.0).x
+    return vel_opt
+
+
+elevations = np.linspace(-10000,10000,100)
+vels = [shoot(elevation) for elevation in elevations]
 
 fig, ax = plt.subplots(1, 1)
-for i,sim in enumerate(sims):
-    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000, label=rf"$v_0 = {velocities[i]}$")
-
-if elevation_of_cliff<0:
-    ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(distance_to_cliff/1000-plt.xlim()[0]),(0-plt.ylim()[0]),
-                                color='green')
-    valley = mpatches.Rectangle((distance_to_cliff/1000,plt.ylim()[0]),(plt.xlim()[1]-distance_to_cliff/1000),
-                                (elevation_of_cliff/1000-plt.ylim()[0]),color='green')
-    ax.add_patch(ground)
-    ax.add_patch(valley)
-else:
-    ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(plt.xlim()[1]-plt.xlim()[0]),(0-plt.ylim()[0]),
-                                color='green')
-    ax.add_patch(ground)
-    cliff = mpatches.Rectangle((distance_to_cliff/1000, 0),(plt.xlim()[1]-distance_to_cliff/1000),
-                               elevation_of_cliff/1000,color='green')
-    ax.add_patch(cliff)
-
-ax.legend()
+plt.plot(elevations/1000,vels)
 ax.grid()
-ax.set_xlabel("x [km]")
-ax.set_ylabel("y [km]")
+ax.set_xlabel("Elevation [km]")
+ax.set_ylabel("v [m/s]")
+ax.set_title("Minimum Velocity vs. Target Elevation")
 plt.suptitle("Problem 2.10c")
 plt.savefig("../../figures/Chapter2/Problem2_10c", dpi=300)
-
-
-
-# Part D
-#################################################################################
-x0 = y0 = 0
-v0 = 1000
-angles = (30,35,40, 45,50,55, 60)
-distance_to_cliff = 10000
-elevation_of_cliff = 10000
-
-
-def bisection(f: callable, a: float, c: float) -> float:
-    # Global Definitions
-    EPS = 2.22044604925e-16
-    ZERO = 1e-14
-    MAX_ITERATIONS = 10000
-    tolerance = 0.5 * EPS * (abs(a) + abs(c))
-    f_a = f(a)
-    f_c = f(c)
-    if f_a * f_c > 0.0:
-        raise NotImplementedError("Bounds don't seem to be surrounding a root")
-        return None
-
-    for iteration in range(MAX_ITERATIONS):
-        b = 0.5 * (a + c)
-        f_b = f(b)
-        if (abs(c - a) < tolerance) or (abs(f_b) < ZERO):
-            return b
-        if f_b * f_a <= 0.0:
-            c = b
-        else:
-            a = b
-        f_a = f(a)
-    raise UserWarning("Maximum number of iterations reached.")
-    print("b = ",b)
-    return b
-
-
-def Final_pos(velocity):
-    ic = np.array([x0, y0, velocity*np.cos(np.pi/3), velocity*np.sin(np.pi/4)])
-    sim = ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate)
-    sim.run()
-    plt.plot(sim.X_series[0],sim.X_series[1])
-    return sim.X_series[0][-1],sim.X_series[1][-1]
-
-
-def F_velocity_x(velocity):
-    ic = np.array([x0, y0, velocity*np.cos(np.pi/3), velocity*np.sin(np.pi/4)])
-    sim = ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate)
-    sim.run()
-    return sim.X_series[0][-1]-distance_to_cliff
-
-
-def F_velocity_y(velocity):
-    ic = np.array([x0, y0, velocity*np.cos(np.pi/3), velocity*np.sin(np.pi/4)])
-    sim = ODE(rhs, ic, ti=0, dt=0.01, tf=400, terminate=terminate)
-    sim.run()
-    return sim.X_series[1][-1]-elevation_of_cliff
-
-print(bisection(F_velocity_x,600,1000))
-print(bisection(F_velocity_y,600,1000))
-plt.clf()
-fig, ax = plt.subplots(1, 1)
-#print(Final_pos(600))
-#print(Final_pos(700))
-#print(Final_pos(800))
-print(Final_pos(833.7190674505091))
-#print(Final_pos(900))
-#print(Final_pos(1000))
-
-if elevation_of_cliff<0:
-    ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(distance_to_cliff-plt.xlim()[0]),(0-plt.ylim()[0]),
-                                color='green')
-    valley = mpatches.Rectangle((distance_to_cliff,plt.ylim()[0]),(plt.xlim()[1]-distance_to_cliff),
-                                (elevation_of_cliff-plt.ylim()[0]),color='green')
-    ax.add_patch(ground)
-    ax.add_patch(valley)
-else:
-    ground = mpatches.Rectangle((plt.xlim()[0],plt.ylim()[0]),(plt.xlim()[1]-plt.xlim()[0]),(0-plt.ylim()[0]),
-                                color='green')
-    ax.add_patch(ground)
-    cliff = mpatches.Rectangle((distance_to_cliff, 0),(plt.xlim()[1]-distance_to_cliff),
-                               elevation_of_cliff,color='green')
-    ax.add_patch(cliff)
-
-ax.grid()
-ax.set_xlabel("x [m]")
-ax.set_ylabel("y [m]")
-
-
-plt.show()

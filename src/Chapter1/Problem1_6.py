@@ -25,7 +25,7 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE, SymplecticODE
+from lib.DSolve import euler
 import numpy as np
 from matplotlib import pyplot as plt
 from functools import partial
@@ -41,21 +41,17 @@ def rhs(t, X, a, b):
 N0_1, N0_2, N0_3 = 1, 1, 1
 a1, a2, a3 = 1, 1, 1
 b1, b2, b3 = 0, 3, 0.01
-
-sim1 = ODE(partial(rhs, a=a1, b=b1), np.array([N0_1, ]), ti=0, dt=0.01, tf=10)
-sim2 = ODE(partial(rhs, a=a2, b=b2), np.array([N0_2, ]), ti=0, dt=0.01, tf=10)
-sim3 = ODE(partial(rhs, a=a3, b=b3), np.array([N0_3, ]), ti=0, dt=0.01, tf=10)
-
-sim1.run()
-sim2.run()
-sim3.run()
+t = np.linspace(0,20,200)  # dt = 0.1
+y1 = euler(partial(rhs, a=a1, b=b1), [N0_1, ], t)
+y2 = euler(partial(rhs, a=a2, b=b2), [N0_2, ], t)
+y3 = euler(partial(rhs, a=a3, b=b3), [N0_3, ], t)
 
 # Plotting
 fig, axs = plt.subplots(3, 1, sharex=True)
 
-axs[0].plot(sim1.t, sim1.X_series[0])
-axs[1].plot(sim2.t, sim2.X_series[0])
-axs[2].plot(sim3.t, sim3.X_series[0])
+axs[0].plot(t, y1[0])
+axs[1].plot(t, y2[0])
+axs[2].plot(t, y3[0])
 
 for ax in axs:
     ax.grid()

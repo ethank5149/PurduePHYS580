@@ -25,13 +25,14 @@
 ########################################################################################################################
 
 # Including
-# Including
-from lib.NDSolveSystem import ODE
+from lib.DSolve import euler
 import numpy as np
 from matplotlib import pyplot as plt
 
 # Global Definitions
 g = 9.81  # Gravitational Acceleration [m/s^2]
+x_initial = y_initial = 0
+v_initial = 700
 
 
 def rhs(t, X):
@@ -42,40 +43,61 @@ def terminate(X):
     return X[1] < 0
 
 
-def deg_to_rad(theta):
-    return np.pi*theta/180
+def f_ic(theta):
+    return [x_initial, y_initial, v_initial*np.cos(np.pi*theta/180), v_initial*np.sin(np.pi*theta/180)]
 
 
-def x(t, x0, y0, dx0, dy0):
-    return x0+dx0*t
+def x_exact(t, x_initial, dx0):
+    return x_initial+dx0*t
 
 
-def y(t, x0, y0, dx0, dy0):
-    return y0+dy0*t-0.5*g*t**2
+def y_exact(t, y_initial, dy0):
+    return y_initial+dy0*t-0.5*g*t**2
 
 
-x0 = y0 = 0
-v0 = 700
-angles_deg = (30, 35, 40, 45, 50, 55)
+angles = (30, 35, 40, 45, 50, 55)
+t = np.linspace(0,200,20000)  # dt = 0.01
 
-angles_rad = tuple([deg_to_rad(angle) for angle in angles_deg])
-ics = tuple([np.array([x0, y0, v0*np.cos(theta), v0*np.sin(theta)])
-             for theta in angles_rad])
+# Intentionally not using list comprehension for readability for non-python folks
+y0 = euler(rhs, f_ic(angles[0]),t ,terminate=terminate)
+y1 = euler(rhs, f_ic(angles[1]),t ,terminate=terminate)
+y2 = euler(rhs, f_ic(angles[2]),t ,terminate=terminate)
+y3 = euler(rhs, f_ic(angles[3]),t ,terminate=terminate)
+y4 = euler(rhs, f_ic(angles[4]),t ,terminate=terminate)
+y5 = euler(rhs, f_ic(angles[5]),t ,terminate=terminate)
 
-sims = tuple([ODE(rhs, ic, ti=0, dt=0.01, tf=200, terminate=terminate)
-              for ic in ics])
-for sim in sims:
-    sim.run()
+y0_exact = [x_exact(t,y0[0,0],y0[2,0])[:np.size(y0[0])], y_exact(t,y0[1,0],y0[3,0])[:np.size(y0[1])]]
+y1_exact = [x_exact(t,y1[0,0],y1[2,0])[:np.size(y1[0])], y_exact(t,y1[1,0],y1[3,0])[:np.size(y1[1])]]
+y2_exact = [x_exact(t,y2[0,0],y2[2,0])[:np.size(y2[0])], y_exact(t,y2[1,0],y2[3,0])[:np.size(y2[1])]]
+y3_exact = [x_exact(t,y3[0,0],y3[2,0])[:np.size(y3[0])], y_exact(t,y3[1,0],y3[3,0])[:np.size(y3[1])]]
+y4_exact = [x_exact(t,y4[0,0],y4[2,0])[:np.size(y4[0])], y_exact(t,y4[1,0],y4[3,0])[:np.size(y4[1])]]
+y5_exact = [x_exact(t,y5[0,0],y5[2,0])[:np.size(y5[0])], y_exact(t,y5[1,0],y5[3,0])[:np.size(y5[1])]]
 
-xs = tuple([x(sim.t, *(sim.X_series[:, 0])) for sim in sims])
-ys = tuple([y(sim.t, *(sim.X_series[:, 0])) for sim in sims])
+# Adjust for the fact that the solutions could have been terminated early
+y0_exact = [y0_exact[0][:np.size(y0[0])], y0_exact[1][:np.size(y0[1])]]
+y1_exact = [y1_exact[0][:np.size(y1[0])], y1_exact[1][:np.size(y1[1])]]
+y2_exact = [y2_exact[0][:np.size(y2[0])], y2_exact[1][:np.size(y2[1])]]
+y3_exact = [y3_exact[0][:np.size(y3[0])], y3_exact[1][:np.size(y3[1])]]
+y4_exact = [y4_exact[0][:np.size(y4[0])], y4_exact[1][:np.size(y4[1])]]
+y5_exact = [y5_exact[0][:np.size(y5[0])], y5_exact[1][:np.size(y5[1])]]
+t0 = t[:np.size(y0[0])]
+t1 = t[:np.size(y1[0])]
+t2 = t[:np.size(y2[0])]
+t3 = t[:np.size(y3[0])]
+t4 = t[:np.size(y4[0])]
+t5 = t[:np.size(y5[0])]
+
+
 
 # Plotting
 # First Plot
 fig, ax = plt.subplots(1, 1)
-for angle, sim in zip(angles_deg, sims):
-    ax.plot(sim.X_series[0]/1000, sim.X_series[1]/1000,
-            label=rf"$\theta = {angle}^{{\circ}}$")
+ax.plot(y0[0]/1000, y0[1]/1000, label=rf"$\theta = {angles[0]}^{{\circ}}$")
+ax.plot(y1[0]/1000, y1[1]/1000, label=rf"$\theta = {angles[1]}^{{\circ}}$")
+ax.plot(y2[0]/1000, y2[1]/1000, label=rf"$\theta = {angles[2]}^{{\circ}}$")
+ax.plot(y3[0]/1000, y3[1]/1000, label=rf"$\theta = {angles[3]}^{{\circ}}$")
+ax.plot(y4[0]/1000, y4[1]/1000, label=rf"$\theta = {angles[4]}^{{\circ}}$")
+ax.plot(y5[0]/1000, y5[1]/1000, label=rf"$\theta = {angles[5]}^{{\circ}}$")
 ax.legend()
 ax.grid()
 ax.set_xlabel("x [km]")
@@ -85,12 +107,19 @@ plt.savefig("../../figures/Chapter2/Problem2_6a", dpi=300)
 
 # Second Plot
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-for angle, sim, _x in zip(angles_deg, sims, xs):
-    ax1.plot(sim.t, np.absolute(
-        sim.X_series[0]-_x), label=rf"$\theta = {angle}^{{\circ}}$")
-for angle, sim, _y in zip(angles_deg, sims, ys):
-    ax2.plot(sim.t, np.absolute(
-        sim.X_series[1]-_y), label=rf"$\theta = {angle}^{{\circ}}$")
+ax1.plot(t0, np.absolute(y0[0]-y0_exact[0]), label=rf"$\theta = {angles[0]}^{{\circ}}$")
+ax1.plot(t1, np.absolute(y1[0]-y1_exact[0]), label=rf"$\theta = {angles[1]}^{{\circ}}$")
+ax1.plot(t2, np.absolute(y2[0]-y2_exact[0]), label=rf"$\theta = {angles[2]}^{{\circ}}$")
+ax1.plot(t3, np.absolute(y3[0]-y3_exact[0]), label=rf"$\theta = {angles[3]}^{{\circ}}$")
+ax1.plot(t4, np.absolute(y4[0]-y4_exact[0]), label=rf"$\theta = {angles[4]}^{{\circ}}$")
+ax1.plot(t5, np.absolute(y5[0]-y5_exact[0]), label=rf"$\theta = {angles[5]}^{{\circ}}$")
+
+ax2.plot(t0, np.absolute(y0[1]-y0_exact[1]), label=rf"$\theta = {angles[0]}^{{\circ}}$")
+ax2.plot(t1, np.absolute(y1[1]-y1_exact[1]), label=rf"$\theta = {angles[1]}^{{\circ}}$")
+ax2.plot(t2, np.absolute(y2[1]-y2_exact[1]), label=rf"$\theta = {angles[2]}^{{\circ}}$")
+ax2.plot(t3, np.absolute(y3[1]-y3_exact[1]), label=rf"$\theta = {angles[3]}^{{\circ}}$")
+ax2.plot(t4, np.absolute(y4[1]-y4_exact[1]), label=rf"$\theta = {angles[4]}^{{\circ}}$")
+ax2.plot(t5, np.absolute(y5[1]-y5_exact[1]), label=rf"$\theta = {angles[5]}^{{\circ}}$")
 
 ax1.legend()
 ax1.grid()

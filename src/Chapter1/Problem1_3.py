@@ -25,8 +25,8 @@
 ########################################################################################################################
 
 # Including
-from lib.NDSolveSystem import ODE, SymplecticODE
 import numpy as np
+from lib.DSolve import euler
 from matplotlib import pyplot as plt
 from functools import partial
 
@@ -42,21 +42,18 @@ a = 9.81
 dx_0 = 0
 b1, b2, b3 = 1, 2, 3
 
-
-sim1 = ODE(partial(rhs, a=a, b=b1), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
-sim2 = ODE(partial(rhs, a=a, b=b2), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
-sim3 = ODE(partial(rhs, a=a, b=b3), np.array([dx_0, ]), ti=0, dt=0.1, tf=10)
-
-sim1.run()
-sim2.run()
-sim3.run()
+t = np.linspace(0,10,100)  # dt = 0.1
+y1 = euler(partial(rhs, a=a, b=b1), [dx_0, ], t)[0]
+y2 = euler(partial(rhs, a=a, b=b2), [dx_0, ], t)[0]
+y3 = euler(partial(rhs, a=a, b=b3), [dx_0, ], t)[0]
 
 # Plotting
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(sim1.t, sim1.X_series[0], label=f"b = {b1}")
-ax.plot(sim2.t, sim2.X_series[0], label=f"b = {b2}")
-ax.plot(sim3.t, sim3.X_series[0], label=f"b = {b3}")
+ax.plot(t, y1, label=f"b = {b1}")
+ax.plot(t, y2, label=f"b = {b2}")
+ax.plot(t, y3, label=f"b = {b3}")
+
 ax.legend()
 ax.grid()
 ax.set_xlabel("t")
