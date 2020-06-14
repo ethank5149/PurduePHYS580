@@ -7,6 +7,7 @@
       <w>heun</w>
       <w>kutta</w>
       <w>runge</w>
+      <w>simplectic</w>
       <w>symplectic</w>
       <w>verlet</w>
     </words>

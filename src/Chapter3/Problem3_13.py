@@ -1,6 +1,6 @@
 ########################################################################################################################
 #     ========     |  Purdue Physics 580 - Computational Physics                                                       #
-#     \\           |  Chapter 3 - Problem 11                                                                           #
+#     \\           |  Chapter 3 - Problem 13                                                                           #
 #      \\          |                                                                                                   #
 #      //          |  Author: Ethan Knox                                                                               #
 #     //           |  Website: https://www.github.com/ethank5149                                                       #
@@ -25,7 +25,7 @@
 ########################################################################################################################
 
 # Including
-from lib.DSolve import rk4_pendulum, eulercromer_pendulum
+from lib.DSolve import odeint
 import numpy as np
 from functools import partial
 from matplotlib import pyplot as plt
@@ -42,47 +42,29 @@ def f(t, X, dX, F_D):
     return np.array([-(g/l)*np.sin(X[0])-q*dX[0]+F_D*np.sin(Omega_D*t),])
 
 
-def f_rk4(t, X, F_D):
-    return np.array([-(g/l)*np.sin(X[0])-q*X[1]+F_D*np.sin(Omega_D*t),])
+def constrain_domain(x, dx):
+    if x[0] < -np.pi:
+        x[0] += 2 * np.pi
+    elif x[0] > np.pi:
+        x[0] -= 2 * np.pi
+    return x, dx
 
 
-def energy(t, X, dX):
-    return 0.5*m*l*dX**2+m*g*l*(1-np.cos(X))
-
-
-def energy_added(t, X, dX, F_D):
-    return ((F_D/Omega_D)*np.cos(Omega_D*t))**2/(2*m)
-
-
-def energy_lost(t, X, dX):
-    return (q*X)**2/(2*m)
-
-
-t = np.linspace(0,60,6000)  # dt = 0.01
-# x1, dx1 = eulercromer_pendulum(partial(f,F_D=0.1),[0.2,],[0],t)
-# x2, dx2 = eulercromer_pendulum(partial(f,F_D=0.5),[0.2,],[0],t)
-# x3, dx3 = eulercromer_pendulum(partial(f,F_D=0.99),[0.2,],[0],t)
-
-x1 = rk4_pendulum(partial(f_rk4,F_D=0.1),[0.2,0],t)
-x2 = rk4_pendulum(partial(f_rk4,F_D=0.5),[0.2,0],t)
-x3 = rk4_pendulum(partial(f_rk4,F_D=0.99),[0.2,0],t)
-
+t = np.linspace(0,200,100000)
+theta0 = 0.2
+dtheta0 = 0.00000001
+# x1, dx1 = odeint(partial(f,F_D=1.2),([theta0,],[0,]),t,method='verlet',fargs=(constrain_domain,))
+# x2, dx2 = odeint(partial(f,F_D=1.2),([theta0+dtheta0,],[0,]),t,method='verlet',fargs=(constrain_domain,))
+x1, dx1 = odeint(partial(f,F_D=1.2),([theta0,],[0,]),t,method='verlet')
+x2, dx2 = odeint(partial(f,F_D=1.2),([theta0+dtheta0,],[0,]),t,method='verlet')
 fig, ax = plt.subplots(1, 1)
 
-# ax.plot(t, energy(t,x1[0],dx1[0]) - energy(t,x1[0][0],dx1[0][0]) ,label=r"$F_D=0.1$")
-# ax.plot(t, energy(t,x2[0],dx2[0]) - energy(t,x2[0][0],dx2[0][0]) ,label=r"$F_D=0.5$")
-# ax.plot(t, energy(t,x3[0],dx3[0]) - energy(t,x3[0][0],dx3[0][0]) , label=r"$F_D=0.99$")
-
-ax.plot(t, energy(t,x1[0],x1[1]) - energy(t,x1[0][0],x1[1][0]),label=r"$F_D=0.1$")
-ax.plot(t, energy(t,x2[0],x2[1]) - energy(t,x2[0][0],x2[1][0]), label=r"$F_D=0.5$")
-ax.plot(t, energy(t,x3[0],x3[1]) - energy(t,x3[0][0],x3[1][0]), label=r"$F_D=0.99$")
-
+ax.plot(t,np.log(np.absolute(x2[0]-x1[0])),label=r"$\ln{\left|\Delta\theta\right|}$")
+ax.set_title(rf"$\Delta\theta_0={dtheta0}$")
 ax.grid()
 ax.set_xlabel(r"$t\,\,[s]$")
-ax.set_ylabel(r"$Energy\,\,[J]$")
+ax.set_ylabel(r"$\ln{\left|\Delta\theta\right|}$")
 ax.legend()
-ax.set_title("Energy Change vs. Time")
 
-plt.suptitle("Problem 3.11")
-plt.savefig("../../figures/Chapter3/Problem3_11", dpi=300)
-
+plt.suptitle(r"Problem 3.13")
+plt.savefig("../../figures/Chapter3/Problem3_13", dpi=300)

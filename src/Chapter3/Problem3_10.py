@@ -32,7 +32,7 @@ from matplotlib import pyplot as plt
 
 
 # Global Definitions
-l = g = 9.81
+l = g = 9.8
 q = 0.5
 Omega_D = 2/3
 
