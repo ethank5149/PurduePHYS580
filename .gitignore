@@ -4,3 +4,4 @@
 .vscode/
 legacy/xtl/
 legacy/xtensor/
+*.pdf
