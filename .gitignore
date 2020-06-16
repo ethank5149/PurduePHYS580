@@ -1,7 +1,9 @@
-*.exe
 .ipynb_checkpoints/
-*.csv
 .vscode/
 legacy/xtl/
 legacy/xtensor/
+src/c++/cmake-build-debug/
+src/c++/data/
+*.csv
 *.pdf
+*.csv
