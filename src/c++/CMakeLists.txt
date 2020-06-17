@@ -9,7 +9,7 @@ include_directories(include
 add_executable(Purdue-PHYS-580
         src/main.cpp
         include/Problem3_17.h
-        )
+        include/Problem3_18.h)
 
 install(TARGETS Purdue-PHYS-580
         CONFIGURATIONS Debug

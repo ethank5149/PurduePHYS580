@@ -1,0 +1,20 @@
+      # Gnuplot script file for plotting data in file "../data/Problem3_17.dat"
+      # Plot with:
+      # terminal```
+      # >gnuplot
+      # >load 'Problem3_17.txt'
+      # ```
+      set   autoscale                        # scale axes automatically
+      unset log                              # remove any log-scaling
+      unset label                            # remove any previous labels
+      set xtic auto                          # set xtics automatically
+      set ytic auto                          # set ytics automatically
+      set title "Problem 3.17 - Poincare Section"
+      set xlabel "theta [rad]"
+      set ylabel "theta_dot [rad/s]"
+      # set key 0.01,100
+      # set label "Yield Point" at 0.003,260
+      # set arrow from 0.0028,250 to 0.003,280
+      set xr [-3.15:3.15]
+      set yr [-1.5:1.5]
+      plot    "../data/Problem3_17.dat" using 1:2 with points

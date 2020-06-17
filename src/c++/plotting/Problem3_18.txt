@@ -1,0 +1,17 @@
+      # Gnuplot script file for plotting data in file "../data/Problem3_18.dat"
+      # Plot with:
+      # terminal```
+      # >gnuplot
+      # >load 'Problem3_18.txt'
+      # ```
+      set   autoscale                        # scale axes automatically
+      unset log                              # remove any log-scaling
+      unset label                            # remove any previous labels
+      set xtic auto                          # set xtics automatically
+      set ytic auto                          # set ytics automatically
+      set title "Problem 3.18 - Bifurcation Plot"
+      set xlabel "F_D [N]"
+      set ylabel "theta [rad]"
+      # set xr [1:3]
+      set yr [1:3]
+      plot    "../data/Problem3_18.dat" using 1:2 with points

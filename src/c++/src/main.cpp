@@ -3,9 +3,10 @@
 //
 
 #include "Problem3_17.h"
+#include "Problem3_18.h"
 
 int main()
 {
-    run_problem3_17();
+    p3_18.run();
     return 0;
 }
