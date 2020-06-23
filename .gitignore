@@ -6,4 +6,4 @@ src/c++/cmake-build-debug/
 src/c++/data/
 *.csv
 *.pdf
-*.csv
+*.dat

@@ -1,7 +1,0 @@
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/Purdue-PHYS-580.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/install/local.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/install.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/edit_cache.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/rebuild_cache.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/list_install_components.dir
-C:/Users/ethan/CLionProjects/Purdue-PHYS-580/cmake-build-release-mingw/CMakeFiles/install/strip.dir

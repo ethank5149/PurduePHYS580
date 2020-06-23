@@ -10,25 +10,16 @@
 
 using namespace std;
 
-const long double Vinf = 100.0;
+const long double Vinf = 1000.0;
 const long double L = 10.0;
-const long double l = 0.0;
-const long double V0 = 2.0;
 const long double zero = 1.0e-10;
 const long double eps = 1.0e-8;
 
 struct Parameters{
     int N = 1000;
-    int N_E = 1000;
-
     long double Ei = 0.0;
     long double Ef = 10.0;
-    long double inf = 10.0;
-    long double xi = -inf;
-    long double xf = inf;
-    long double dx = (xf-xi)/(long double)(N-1);
-    long double dE = (Ef-Ei)/(long double)(N_E-1);
-    string method = "qho";
+    long double dx = 2.0/(long double)(N-1);
 }params;
 
 void norm(vector<long double> &psi, const vector<long double>& x){
@@ -49,17 +40,7 @@ void norm(vector<long double> &psi, const vector<long double>& x){
 
 }
 
-void solve_qho(vector<long double> &psi, vector<long double> &x, long double E){
-    long double dx = x[1] - x[0];
-    long double v;
-    for(unsigned int j = 1; j<x.size()-1;j++){
-        v = 0.5 * pow(x[j],2);
-        psi[j+1] = 2.0 * (pow(dx,2) * (v - E) + 1) * psi[j] - psi[j-1];
-    }
-    norm(psi, x);
-}
-
-void solve_isw(vector<long double> &psi, vector<long double> &x, long double E){
+long double obj_func(vector<long double> &psi, vector<long double> &x, long double E){
     long double dx = x[1] - x[0];
     long double v;
     for(unsigned int j = 1; j<x.size()-1;j++){
@@ -67,98 +48,42 @@ void solve_isw(vector<long double> &psi, vector<long double> &x, long double E){
         psi[j+1] = 2.0 * (pow(dx,2) * (v - E) + 1) * psi[j] - psi[j-1];
     }
     norm(psi, x);
+    return psi.back();
 }
 
-void solve_fsw(vector<long double> &psi, vector<long double> &x, long double E){
-    long double dx = x[1] - x[0];
-    long double v;
-    for(unsigned int j = 1; j<x.size()-1;j++){
-        v = ((-0.5 * L < x[j]) && (x[j] < 0.5 * L)) ? 0.0 : V0;
-        psi[j+1] = 2.0 * (pow(dx,2) * (v - E) + 1) * psi[j] - psi[j-1];
-    }
-    norm(psi, x);
-}
-
-void solve_h(vector<long double> &psi, vector<long double> &x, long double E){
-    long double dx = x[1] - x[0];
-    long double v;
-    for(unsigned int j = 1; j<x.size()-1;j++){
-        v = 0.5 * l * (l + 1) / pow(x[j],2) - 1 / x[j];
-        psi[j+1] = 2.0 * (pow(dx,2) * (v - E) + 1) * psi[j] - psi[j-1];
-    }
-    norm(psi, x);
-}
-
-void initialize(vector<long double> &psi, vector<long double> &x, vector<long double> &E, struct Parameters &params){
-    string helpmethod = "qho:  Quantum Harmonic Oscillator\n"
-                        "isw:  Infinite Square Well   \n"
-                        "fsw:  Finite Square Well     \n"
-                        "H:    Hydrogen Atom     \n";
-
-    cout << "Input a potential, type 'help' to get a list of available options"<<endl;
-    cin >> params.method;
-    cout << endl;
-    if(params.method == "help"){
-        cout << helpmethod << endl;
-        return;
-    }
-
-    cout << "Input: inf"<<endl;
-    cin >> params.inf;
-    cout << endl;
-
-    cout << "Input: xi xf N"<<endl;
-    cin >> params.xi >> params.xf >> params.N;
-    cout << endl;
-
-    cout << "Input: Ei Ef N_E"<<endl;
-    cin >> params.Ei >> params.Ef >> params.N_E;
+void initialize(vector<long double> &psi, vector<long double> &x, struct Parameters &params){
+    cout << "Input: N Ei Ef"<<endl;
+    cin >> params.N >> params.Ei >> params.Ef;
     cout << endl;
 
     psi.resize(params.N);
     x.resize(params.N);
-    E.resize(params.N_E);
+
+    params.dx = 2.0/(long double)(params.N-1);
 
     psi[0] = 0;
     psi[1] = params.dx;
-    x[0] = params.xi;
-    E[0] = params.Ei;
-
-    params.dx = (params.xf-params.xi)/(long double)(params.N-1);
-    params.dE = (params.Ef-params.Ei)/(long double)(params.N_E-1);
+    x[0] = -1.0;
 
     for(unsigned int i=1;i<params.N;i++){
         x[i] = x[i-1] + params.dx;
     }
-
-    for(unsigned int i=1;i<params.N_E;i++){
-        E[i] = E[i-1] + params.dE;
-    }
 }
-
-long double obj_func(void (*f)(vector<long double> &psi, vector<long double> &x, long double E),
-        vector<long double> &psi, vector<long double> &x, long double e){
-    f(psi, x, e);
-    return psi.back();
-}
-
 
 int main() {
     vector<long double> psi, x, E;
-    initialize(psi, x, E, params);
-    long double a = 0.0;
-    long double b = 10.0;
+    initialize(psi, x, params);
+    long double a = params.Ei;
+    long double b = params.Ef;
     long double c = 0.0;
 
-    void (*f_ptr)(vector<long double> &, vector<long double> &, long double) = solve_qho;
-
-    if(obj_func(f_ptr,psi,x,a)*obj_func(f_ptr,psi,x,b)<0.0){
+    if(obj_func(psi,x,a)*obj_func(psi,x,b)<0.0){
         // bisection
         long double fa, fb, fc;
 
         while(abs(b-a)>eps){
             c = 0.5*(a+b);
-            fa = obj_func(f_ptr,psi,x,a); fb = obj_func(f_ptr,psi,x,b); fc = obj_func(f_ptr,psi,x,c);
+            fa = obj_func(psi,x,a); fb = obj_func(psi,x,b); fc = obj_func(psi,x,c);
 
             if (abs(fa) < zero) { c = a; break; }
             if (abs(fb) < zero) { c = b; break; }
@@ -173,10 +98,10 @@ int main() {
         // regula falsi
         long double fa, fb, fc;
         while (abs(b - a) > eps) {
-            fa = obj_func(f_ptr, psi, x, a);
-            fb = obj_func(f_ptr, psi, x, b);
+            fa = obj_func(psi, x, a);
+            fb = obj_func(psi, x, b);
             c = (a * fb - b * fa) / (fb - fa);
-            fc = obj_func(f_ptr, psi, x, c);
+            fc = obj_func(psi, x, c);
 
             if (abs(fa) < zero) { c = a; break; }
             if (abs(fb) < zero) { c = b; break; }
@@ -186,6 +111,44 @@ int main() {
             else { b = c; }
         }
     }
-    cout << c << endl;
+    cout << setprecision(numeric_limits<long double>::digits10 + 1);
+    cout << "E = " << c << endl;
+    cout << "Checking Answer..." << endl;
+    cout << "Is this close enough to an integer? -> " << 2.0*sqrt(2.0*c)/M_PI << endl;
+    cout << "If so, You're good to go!" << endl;
 return 0;
 }
+
+//Results
+
+//N = 40
+////n = 1: 1.233033575117588043 | -0.05406295867405493 % Error
+////n = 2: 4.92413763515651226  | -0.21610927763203222 % Error
+////n = 3: 11.04937392374371668 | -0.4857204924004033  % Error
+////n = 4: 19.56901795417070389 | -0.8621969082632495  % Error
+////n = 5: 30.42781655676662922 | -1.3445635461274381  % Error
+////n = 6: 43.55534624168649316 | -1.931572552010588   % Error
+
+//N = 200
+////n = 1: 1.233674921095371246 | -0.0020774117994576476 % Error
+////n = 2: 4.934392256662249565 | -0.008307199878937062  % Error
+////n = 3: 11.10122967511415482 | -0.018690616176801584  % Error
+////n = 4: 19.73265030235052109 | -0.0332257482755388    % Error
+////n = 5: 30.82650300115346909 | -0.05191130780968817   % Error
+////n = 6: 44.3800229262560606  | -0.07474548972553445   % Error
+
+//N = 400
+////n = 1: 1.233694173395633698 | -0.0005168791191142531 % Error
+////n = 2: 4.934700218960642815 | -0.00206657896085329   % Error
+////n = 3: 11.10278870910406113 | -0.004649445581606569  % Error
+////n = 4: 19.73757722228765488 | -0.008265680288467398  % Error
+////n = 5: 30.83853048086166382 | -0.012914876441096497  % Error
+////n = 6: 44.4049602784216404  | -0.01859699998503756   % Error
+
+//Analytic
+////n = 1: 1.2337005501361697
+////n = 2: 4.934802200544679
+////n = 3: 11.103304951225528
+////n = 4: 19.739208802178716
+////n = 5: 30.842513753404244
+////n = 6: 44.41321980490211

@@ -1,0 +1,15 @@
+# Gnuplot script file for plotting data in file "../data/output.dat"
+# Plot with:
+# terminal```
+# >gnuplot
+# >load 'output.txt'
+# ```
+set autoscale                        # scale axes automatically
+set xtic auto                          # set xtics automatically
+set ytic auto                          # set ytics automatically
+set title "Most Recent Output From 'Problem10_3.exe'"
+set xlabel "x [Hartree]"
+set ylabel "\psi [Hartree]"
+# set xr [-3.15:3.15]
+# set yr [-1.5:1.5]
+plot    "../data/output.dat" using 1:2 with lines
