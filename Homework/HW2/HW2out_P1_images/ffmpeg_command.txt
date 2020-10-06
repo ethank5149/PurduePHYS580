@@ -1,0 +1,1 @@
+ffmpeg -framerate 12 -i P1_Q=%04d.png output.mp4

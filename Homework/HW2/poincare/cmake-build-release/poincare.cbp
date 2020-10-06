@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="poincare"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\scripts\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\scripts\buildsystems\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtensor\;CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtl\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="poincare">
+				<Option output="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release/poincare.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add directory="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/include"/>
+					<Add directory="C:/vcpkg/installed/x86-windows/include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 poincare"/>
+					<CompileFile command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="poincare/fast">
+				<Option output="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release/poincare.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add directory="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/include"/>
+					<Add directory="C:/vcpkg/installed/x86-windows/include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 poincare/fast"/>
+					<CompileFile command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/include/poincare.hpp">
+			<Option target="poincare"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/main.cpp">
+			<Option target="poincare"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/scripts/buildsystems/vcpkg.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\scripts\buildsystems\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtensor/xtensorConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtensor\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtensor/xtensorConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtensor\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtensor/xtensorTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtensor\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtl/xtlConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtl\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtl/xtlConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtl\"/>
+		</Unit>
+		<Unit filename="C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/../../../../../../../../vcpkg/installed/x86-windows/share/xtl/xtlTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\vcpkg\installed\x86-windows\share\xtl\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,3 @@
+C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/bifurcation/cmake-build-release/CMakeFiles/bifurcation.dir
+C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/bifurcation/cmake-build-release/CMakeFiles/edit_cache.dir
+C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/bifurcation/cmake-build-release/CMakeFiles/rebuild_cache.dir

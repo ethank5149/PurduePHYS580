@@ -1,0 +1,6 @@
+C:\Users\ethan\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\202.7319.72\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -G "CodeBlocks - NMake Makefiles" C:\Users\ethan\Documents\GitHub\Purdue-PHYS-580\Homework\HW2\poincare
+Boost Found! :)
+'program_options' Found! :)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/ethan/Documents/GitHub/Purdue-PHYS-580/Homework/HW2/poincare/cmake-build-release
