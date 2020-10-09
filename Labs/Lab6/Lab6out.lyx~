@@ -1,0 +1,334 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\vec{T}=\frac{3GM}{r^{3}}\left(C-A\right)\sin\delta\cos\delta\begin{pmatrix}\sin\alpha\\
+-\cos\alpha\\
+0
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{T}=\frac{3GM}{r^{3}}\left(B_{\text{axis of rotation}}-A_{\text{equatorial diameter}}\right)\sin\delta\cos\delta\begin{pmatrix}\sin\alpha\\
+-\cos\alpha\\
+0
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{T}_{\text{on Hyperion}}=\frac{3GM_{\text{Saturn}}}{r^{3}}\left(C_{\text{Hyperion,axis rot}}-A_{\text{Hyperion, equatorial dia}}\right)\sin\delta\cos\delta\begin{pmatrix}\sin\alpha\\
+-\cos\alpha\\
+0
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{T}_{\text{on Hyperion}}=\frac{3GM_{\text{Saturn}}}{r^{3}}\left(C_{\text{Hyperion,axis rot}}-A_{\text{Hyperion, equatorial dia}}\right)\sin\delta\cos\delta\begin{pmatrix}\sin\alpha\\
+-\cos\alpha\\
+0
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A\frac{d\omega_{a}}{dt}-\omega_{b}\omega_{c}(B-C)=-\frac{3}{r^{3}}\beta\gamma(B-C)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+B\frac{d\omega_{b}}{dt}-\omega_{c}\omega_{a}(C-A)=-\frac{3}{r^{3}}\gamma\alpha(C-A)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C\frac{d\omega_{c}}{dt}-\omega_{a}\omega_{b}(A-B)=-\frac{3}{r^{3}}\alpha\beta(A-B)
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\omega_{a}=\dot{\theta}\sin\phi\sin\psi+\dot{\phi}\cos\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\omega_{b}=\dot{\theta}\sin\phi\cos\psi+\dot{\phi}\sin\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\omega_{c}=\dot{\theta}\cos\phi+\dot{\psi}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\omega}_{a}=\ddot{\theta}\sin\phi\sin\psi+\dot{\theta}\left(\dot{\phi}\cos\phi\sin\psi+\dot{\psi}\sin\phi\cos\psi\right)+\ddot{\phi}\cos\psi-\dot{\phi}\dot{\psi}\sin\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\omega}_{b}=\ddot{\theta}\sin\phi\cos\psi+\dot{\theta}\left(\dot{\phi}\cos\phi\cos\psi-\dot{\psi}\sin\phi\sin\psi\right)+\ddot{\phi}\sin\psi+\dot{\phi}\dot{\psi}\cos\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dot{\omega}_{c}=\ddot{\theta}\cos\phi-\dot{\theta}\dot{\phi}\sin\phi+\ddot{\psi}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\alpha=\cos\theta\cos\psi-\sin\theta\cos\phi\sin\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\beta=-\cos\theta\sin\psi-\sin\theta\cos\phi\cos\psi
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\gamma=\sin\theta\sin\phi
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A\left(\ddot{\theta}\sin\phi\sin\psi+\dot{\theta}\left(\dot{\phi}\cos\phi\sin\psi+\dot{\psi}\sin\phi\cos\psi\right)+\ddot{\phi}\cos\psi-\dot{\phi}\dot{\psi}\sin\psi\right)-\left(\dot{\theta}\sin\phi\cos\psi+\dot{\phi}\sin\psi\right)\left(\dot{\theta}\cos\phi+\dot{\psi}\right)(B-C)=-\frac{3}{r^{3}}\left(-\cos\theta\sin\psi-\sin\theta\cos\phi\cos\psi\right)\left(\sin\theta\sin\phi\right)(B-C)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+B\frac{d\omega_{b}}{dt}-\omega_{c}\omega_{a}(C-A)=-\frac{3}{r^{3}}\gamma\alpha(C-A)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C\frac{d\omega_{c}}{dt}-\omega_{a}\omega_{b}(A-B)=-\frac{3}{r^{3}}\alpha\beta(A-B)
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C\ddot{\theta}-\frac{3\left(B-A\right)}{2}\frac{GM}{r^{3}}\sin2\left(\theta-f\right)=0\Rightarrow\ddot{\theta}+\frac{\omega_{0}^{2}}{2r^{3}}\sin2\left(\theta-f\right)=0
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A\frac{d\omega_{a}}{dt}-\omega_{b}\omega_{c}(B-C)=-\frac{3}{r^{3}}\left(-\cos\theta\sin\psi-\sin\theta\cos\phi\cos\psi\right)\sin\theta\sin\phi(B-C)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+B\frac{d\omega_{b}}{dt}-\omega_{c}\omega_{a}(C-A)=-\frac{3}{r^{3}}\sin\theta\sin\phi\left(\cos\theta\cos\psi-\sin\theta\cos\phi\sin\psi\right)(C-A)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C\frac{d\omega_{c}}{dt}-\omega_{a}\omega_{b}(A-B)=-\frac{3}{r^{3}}\left(\cos\theta\cos\psi-\sin\theta\cos\phi\sin\psi\right)\left(-\cos\theta\sin\psi-\sin\theta\cos\phi\cos\psi\right)(A-B)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
