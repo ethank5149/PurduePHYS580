@@ -85,14 +85,6 @@ ax = fig.add_subplot(111, projection='3d')
 
 # create an x-y mesh (X & Y are 2D arrays of x and y values)
 #
-# note, Python interprets array indices this way:
-#
-#                  V[M,M]    is (x,y) = (0,0)
-#                  V[M-1,M]  is (x,y) = (0,-dL)
-#                  V[M,M-1]  is (x,y) = (-dL,0)
-#
-#  => x & y are swapped, so we swap them back below
-#
 xvals = [ -0.5 + i * dL  for i in range(N) ]
 yvals = [ -0.5 + i * dL  for i in range(N) ]
 (Y, X) = np.meshgrid(xvals, yvals)   #Y,X order!
