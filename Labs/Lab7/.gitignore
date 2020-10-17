@@ -1,9 +1,5 @@
 .ipynb_checkpoints/
-.vscode/
 *.png
 *.avi
 *.mp4
-*.csv
 *.pdf
-*.dat
-*.obj
