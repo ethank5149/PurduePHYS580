@@ -1,25 +1,11 @@
 from numpy import asarray, sin, cos, pi, vsplit
 
-def path_loop_top(s, _l, _R, _w):
-    x = asarray([_R * cos(2 * pi * _w * _) for _ in s])
-    y = asarray([_R * sin(2 * pi * _w * _) for _ in s])
-    z = asarray([                   _l / 2 for _ in s])
-    return x, y, z
 
-def path_loop_bottom(s, _l, _R, _w):
-    x = asarray([_R * cos(2 * pi * _w * _) for _ in s])
-    y = asarray([_R * sin(2 * pi * _w * _) for _ in s])
-    z = asarray([                  -_l / 2 for _ in s])
-    return x, y, z
-
-def path_loop_bottom_reversed(s, _l, _R, _w):
-    x = asarray([_R * cos(2 * pi * _w * (1 - _)) for _ in s])
-    y = asarray([_R * sin(2 * pi * _w * (1 - _)) for _ in s])
-    z = asarray([                        -_l / 2 for _ in s])
-    return x, y, z
-
-def path_solenoid(s, _l, _R, _w):
-    x = asarray([_R * cos(2 * pi * _w * _) for _ in s])
-    y = asarray([_R * sin(2 * pi * _w * _) for _ in s])
-    z = asarray([     _l * (2 * _ - 1) / 2 for _ in s])
-    return x, y, z
+path_loop_top =      lambda s, r, l, n : asarray([                    r * cos(2 * pi * n * s),                     r * sin(2 * pi * n * s),           l / 2])
+path_loop_bottom =   lambda s, r, l, n : asarray([                    r * cos(2 * pi * n * s),                     r * sin(2 * pi * n * s),         - l / 2])
+path_rloop_bottom =  lambda s, r, l, n : asarray([              r * cos(2 * pi * n * (1 - s)),               r * sin(2 * pi * n * (1 - s)),         - l / 2])
+path_solenoid =      lambda s, r, l, n : asarray([                    r * cos(2 * pi * n * s),                     r * sin(2 * pi * n * s), l * (s - 1 / 2)])
+dpath_loop_top =     lambda s, r, l, n : asarray([      -2 * pi * n * r * sin(2 * pi * n * s),        2 * pi * n * r * cos(2 * pi * n * s),               0])
+dpath_loop_bottom =  lambda s, r, l, n : asarray([      -2 * pi * n * r * sin(2 * pi * n * s),        2 * pi * n * r * cos(2 * pi * n * s),               0])
+dpath_rloop_bottom = lambda s, r, l, n : asarray([ 2 * pi * n * r * sin(2 * pi * n * (1 - s)), -2 * pi * n * r * cos(2 * pi * n * (1 - s)),               0])
+dpath_solenoid =     lambda s, r, l, n : asarray([      -2 * pi * n * r * sin(2 * pi * n * s),        2 * pi * n * r * cos(2 * pi * n * s),               l])
