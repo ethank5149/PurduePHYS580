@@ -1,9 +1,12 @@
-# Homework
+# Purdue-PHYS-580
+Exercises and their solutions for PHYS 580 (Computational Physics) at Purdue University
+
+## Homework
 - [Homework 1](Homework/HW1)
 - [Homework 2](Homework/HW2)
 - [Homework 3](Homework/HW3)
 
-# Labs
+## Labs
 - [Lab 1](Labs/Lab1)
 - [Lab 2](Labs/Lab2)
 - [Lab 3](Labs/Lab3)
