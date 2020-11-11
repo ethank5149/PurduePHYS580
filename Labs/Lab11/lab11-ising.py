@@ -72,43 +72,35 @@ def plotRedsBlues(ax0, reds, blues):
 
 # read parameters
 #
-N   = int(   input('Lattice size N (for NxN lattice): ') )
-T   = float( input('Temperature [J/k_B]: ') )
-H   = float( input('Magnetic field [J/mu]: ') )
-MCS = int(   input('Monte Carlo steps per spin: ') )
-icType = int( input('Initial spin config (1: all up, -1: all down, 2: random): ') )
-fname  = input('output file for magnetization/energy time series: ').strip()
-
+N   = 50  # Lattice size N (for NxN lattice)
+T   = 1.5  # Temperature [J/k_B]
+H   = 0.0  # Magnetic field [J/mu]
+MCS = 100  # Monte Carlo steps per spin
+fill = 'random'
+icType = 2  # Initial spin config (1: all up, -1: all down, 2: random)
+fname  = 'output'  # output file for magnetization/energy time series
 params = (N, T, H)
-
-#diagnostics
-print( "N=%d, T=%0.5f [J/k_B], H=%0.5f [J/mu]" % (N, T, H) )
 
 
 # initial conditions
 #
 
-spins = np.zeros( (N,N), dtype = int )
-
-# set spin directions
-if   icType ==  1:   spins.fill( 1)
-elif icType == -1:   spins.fill(-1)
-else:
-   for i in range(N):
-      for j in range(N):
-         if random.random() <= 0.5:  spins[i,j] =  1
-         else:                       spins[i,j] = -1
+if fill is 'random':
+   spins = 2 * np.random.randint((N,N), dtype = int ) - 1
+elif fill is 'up':
+   spins = np.ones((N,N), dtype=int)
+elif fill is 'down':
+   spins = -np.ones((N,N), dtype=int)
 
 # compute initial energy and magnetization
-m, E = 0., 0.
+E = 0.
 for i in range(N):
    for j in range(N):
-      m += spins[i,j]
-      # nearest neighbor sum, periodic boundary conditions
-      sum = spins[(i-1) % N,j] + spins[(i+1) % N, j] + spins[i,(j-1) % N] + spins[i,(j+1) % N]
-      E = E - 0.5 * spins[i,j] * sum - H * spins[i,j]
-m /= N**2  # normalize per site
-E /= N**2
+      # nbs = spins[(i-1) % N,j] + spins[(i+1) % N, j] + spins[i,(j-1) % N] + spins[i,(j+1) % N]
+      E -= 0.5 * spins[i,j] * spins[(i-1) % N,j] + spins[(i+1) % N, j] + spins[i,(j-1) % N] + spins[i,(j+1) % N] - H * spins[i,j]
+m = np.sum(spins)
+intrinsic_m = m / spins.size
+intrinsic_E = E / spins.size
 
 
 # open output file (truncate)
@@ -122,24 +114,16 @@ else:
 # display initial spin configuration
 #
 
-fontsize = 30   # fontsize, need to be tuned to screen resolution
-linewidth = 3
 pointarea = 80. * (20. / N)**2   # scale to N = 20 
 
 fig, axArray = plt.subplots(1, 1)
 (ax0) = axArray
 
-ax0.tick_params(labelsize = fontsize)
 
 plotGrid(ax0, spins)
-
-# turn on interactive mode, so plt.show() does not block, then create plot window
-matplotlib.pyplot.ion()
 plt.show()
 
 
-plt.pause(0.001)
-input('[ENTER]')
 
 
 
@@ -151,9 +135,6 @@ diagFreq = 1 # frequency of diagnostic output to stdout
 Nscatter = 0   # track number of points in scatter plot to prevent eventual slowdown
 iter = 0
 while True:
-   # diagnostic output and output to file (if requested)
-   if (iter % diagFreq) == 0:
-      print( " MCS=%d: M=%0.5f, E=%0.5f\n" % (iter, m, E) )
    if f != None:
       f.write(str(iter) + " " + str(m) + " " + str(E) + "\n")
       f.flush()
@@ -161,8 +142,7 @@ while True:
    if iter == MCS: break
    # do one update
    iter += 1
-   #flipped, dE, dm = updateMC(spins, params, False)  # update without diagnostics
-   flipped, dm, dE = updateMC(spins, params, True)   # update with diagnostics
+   flipped, dE, dm = updateMC(spins, params, False)  # update without diagnostics
    m += dm
    E += dE
    # update plot
@@ -185,8 +165,3 @@ while True:
 # close file
 if f != None:  f.close()
 
-
-# wait for user input
-while input("Finish [q]") != "q":  pass
-
-#EOF
