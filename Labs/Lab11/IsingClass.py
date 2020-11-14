@@ -10,7 +10,7 @@ class Ising:
         self, 
         rows=500,         # Number of rows
         cols=500,         # Number of columns
-        nsweeps=250,      # Number of Cycles
+        nsweeps=500,      # Number of Cycles
         J=1.0,            # Ferromagnetic Coupling Constant 
         h=0.0,            # Magnetic Field Strength 
         T=1.4,            # Temperature
@@ -87,9 +87,13 @@ class Ising:
         system('ffmpeg -framerate 24 -i frames/grid_%04d.png frames/grid.mp4')
 
 
-if __name__ == '__main__':
+def main():
     print('Using Default Settings...')
     p = Ising()
     print('Animating...')
     p.animate()
     print('Done!')
+
+
+if __name__ == '__main__':
+    main()
